@@ -1,1 +1,347 @@
-<!-- this is just for base -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Develpoer Studio | Websites & Apps on Order</title>
+    <meta name="description"
+        content="Modern developer studio where users can order websites and apps with AI assistance" />
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Inter:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="globalstyle.css">
+    <link rel="stylesheet" href="indexstyle.css">
+</head>
+
+<body>
+    <!-- TOP NAVBAR -->
+    <nav class="top-nav">
+
+        <!-- LEFT LOGO -->
+        <div class="nav-logo">
+            DEVELOPERS
+        </div>
+
+        <!-- CENTER GLASS NAV (DESKTOP ONLY) -->
+        <div class="nav-center">
+            <a href="#" class="nav-link">Languages</a>
+            <a href="#" class="nav-link">About</a>
+            <a href="#features" class="nav-link active">Features</a>
+            <a href="#" class="nav-link">FAQ</a>
+        </div>
+
+        <!-- RIGHT ACTION -->
+        <div class="nav-action">
+            <a href="#" class="login-btn">Log In</a>
+
+            <!-- HAMBURGER (MOBILE) -->
+            <button class="menu-btn" onclick="openMenu()">☰</button>
+        </div>
+    </nav>
+
+    <!-- SIDE NAV (MOBILE DRAWER) -->
+    <div class="side-nav" id="sideNav">
+        <span class="close-btn" onclick="closeMenu()">×</span>
+
+        <a href="#">Languages</a>
+        <a href="#">About</a>
+        <a href="#features">Features</a>
+        <a href="#">FAQ</a>
+        <a href="#" class="login-btn show">Log In</a>
+
+    </div>
+
+    <!-- HERO -->
+    <header>
+        <div class="code-bg" style="top:10%;left:8%">&lt;/&gt;</div>
+        <div class="code-bg" style="bottom:15%;right:10%">{ }</div>
+
+        <h1 class="hero-title">
+            Build Your
+            <span class="typing-wrapper">
+                <span id="typing-text"></span>
+                <span class="cursor">|</span>
+            </span>
+        </h1>
+
+        <p class="hero-subtitle">
+            A modern developer studio to order professional websites and apps
+        </p>
+
+        <a href="#pricing" class="btn">Start Your Project</a>
+    </header>
+
+    <!-- SERVICES -->
+    <section>
+        <div class="title">
+            <h2>What We Build</h2>
+            <p>Developer-focused solutions</p>
+        </div>
+
+        <div class="services">
+            <div class="service-card">
+                <h3>Websites</h3>
+                <p>Fast, modern & responsive</p>
+            </div>
+            <div class="service-card">
+                <h3>Web Apps</h3>
+                <p>SaaS & dashboards</p>
+            </div>
+            <div class="service-card">
+                <h3>Mobile Apps</h3>
+                <p>Android & cross-platform</p>
+            </div>
+            <div class="service-card">
+                <h3>Artificial Intelligence</h3>
+                <p>AI-powered solutions & automation</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- DEVEPLOPER ASSISTANT SECTION -->
+    <section id="assistant">
+        <div class="title">
+            <h2>Developer Assistant</h2>
+            <p>Interactive support for your project (Coming Soon)</p>
+        </div>
+
+        <div class="bot">
+            <div class="bot-header">
+                🤖 Deveploper Studio Assistant
+            </div>
+
+            <p class="bot-desc">
+                This assistant will help you understand pricing, tech stack,
+                features and guide you while placing an order.
+            </p>
+
+            <div class="chat-preview">
+                <div class="chat-label">Assistant UI Preview</div>
+
+                <div class="chat-message">
+                    👋 Hi! I will assist you with your project soon.
+                </div>
+
+                <input type="text" disabled placeholder="Chat coming soon..." />
+            </div>
+        </div>
+    </section>
+
+    <section class="stack-wrapper" id="features">
+
+        <!-- SLIDE 1 -->
+        <div class="stack-card">
+            <div class="stack-inner">
+
+            <div class="stack-content">
+            <h2>Easy To Connect</h2>
+            <p>Reach out to our developers directly for orders and expert advice.       </p>
+
+            <div class="pricing-grid">
+            <div class="price-box">
+                <h4>Support</h4>
+                <span>24/7 Available</span>
+            </div>
+            </div>
+            </div>
+
+            <div class="stack-video">
+            <video autoplay muted loop playsinline>
+            <source src="connect-demo.mp4" type="video/mp4">
+            </video>
+            </div>
+
+            </div>
+        </div>
+
+        <!-- SLIDE 2 -->
+        <div class="stack-card">
+            <div class="stack-inner">
+
+            <div class="stack-content">
+                <h2>Services faster than others</h2>
+                <p>We offer up-to-time order completion with best performance</p>
+
+                <div class="pricing-grid">
+                <div class="price-box">
+                    <h4>Speed Advantage</h4>
+                    <span>99.9% at time</span>
+                </div>
+                </div>
+            </div>
+
+            <div class="stack-video">
+                <video autoplay muted loop playsinline>
+                <source src="speed-demo.mp4" type="video/mp4">
+                </video>
+            </div>
+
+            </div>
+        </div>
+
+        <!-- SLIDE 3 -->
+        <div class="stack-card">
+            <div class="stack-inner">
+
+            <div class="stack-content">
+                <h2>Customization Options</h2>
+                <p>Various customization options for every user.</p>
+
+                <div class="pricing-grid">
+                <div class="price-box">
+                    <h4>Flexible Solutions</h4>
+                    <span>Tailored to your needs</span>
+                </div>
+                </div>
+            </div>
+
+            <div class="stack-video">
+                <video autoplay muted loop playsinline>
+                <source src="customization-demo.mp4" type="video/mp4">
+                </video>
+            </div>
+
+            </div>
+        </div>
+
+        <!-- SLIDE 4 -->
+        <div class="stack-card">
+            <div class="stack-inner">
+
+            <div class="stack-content">
+                <h2>Affordable Prices</h2>
+                <p>Competitive pricing for all our services.</p>
+
+                <div class="pricing-grid">
+                <div class="price-box">
+                    <h4>Value for Money</h4>
+                    <span>Quality services at reasonable rates</span>
+                </div>
+                </div>
+            </div>
+
+            <div class="stack-video">
+                <video autoplay muted loop playsinline>
+                <source src="affordable-demo.mp4" type="video/mp4">
+                </video>
+            </div>
+
+            </div>
+        </div>
+
+    </section>
+
+    <!-- PRICING CALCULATOR -->
+    <section id="pricing">
+        <div class="title">
+            <h2>Pricing Calculator</h2>
+            <p>Estimate your project cost</p>
+        </div>
+
+        <div class="pricing-box">
+            <label>Number of Pages</label>
+            <input type="number" id="pages" value="1" min="1">
+
+            <label>Project Type</label>
+            <select id="projectType">
+                <option value="3000">Static Website</option>
+                <option value="6000">Dynamic Website</option>
+                <option value="12000">Web App</option>
+                <option value="18000">Mobile App</option>
+            </select>
+
+            <label>Tech Stack</label>
+            <select id="tech">
+                <option value="1">HTML / CSS / JS</option>
+                <option value="1.4">React / Next.js</option>
+                <option value="1.7">Full Stack</option>
+            </select>
+
+            <div class="price-output">
+                Estimated Price: ₹<span id="price">0</span>
+            </div>
+
+            <button class="btn" onclick="openOrder()">Order Now</button>
+        </div>
+    </section>
+
+    <!-- ORDER POPUP -->
+    <div class="modal" id="orderModal">
+        <div class="modal-box">
+            <div class="close-btn" onclick="closeOrder()">×</div>
+
+            <div class="title">
+                <h2>Place Your Order</h2>
+                <p>Tell us about your project</p>
+            </div>
+
+            <p style="margin-bottom:12px;color:#aaa">
+                Estimated Price: ₹<strong style="color:#4ade80" id="finalPrice">0</strong>
+            </p>
+
+            <input type="text" placeholder="Your Name"
+                style="width:100%;padding:10px;margin:8px 0;border-radius:8px;border:none">
+
+            <input type="email" placeholder="Email"
+                style="width:100%;padding:10px;margin:8px 0;border-radius:8px;border:none">
+
+            <textarea placeholder="Project details" rows="4"
+                style="width:100%;padding:10px;margin:8px 0;border-radius:8px;border:none"></textarea>
+
+            <button class="btn" style="width:100%">Submit Order</button>
+        </div>
+    </div>
+
+    <!-- CONTACT SECTION -->
+    <section id="contact">
+        <div class="title">
+            <h2>Connect With Us</h2>
+            <p>Available across all platforms</p>
+        </div>
+
+        <div class="contact-box">
+
+            <a href="#" class="contact-item" title="Email">
+                <i class="fa-solid fa-envelope"></i>
+            </a>
+
+            <a href="#" class="contact-item" title="WhatsApp">
+                <i class="fa-brands fa-whatsapp"></i>
+            </a>
+
+            <a href="#" class="contact-item" title="GitHub">
+                <i class="fa-brands fa-github"></i>
+            </a>
+
+            <a href="#" class="contact-item" title="LinkedIn">
+                <i class="fa-brands fa-linkedin"></i>
+            </a>
+
+            <a href="#" class="contact-item" title="Instagram">
+                <i class="fa-brands fa-instagram"></i>
+            </a>
+
+            <a href="#" class="contact-item" title="Twitter / X">
+                <i class="fa-brands fa-x-twitter"></i>
+            </a>
+
+            <a href="#" class="contact-item" title="YouTube">
+                <i class="fa-brands fa-youtube"></i>
+            </a>
+        </div>
+    </section>
+
+    <footer>
+        © 2025 Developer Studio | Developer-first platform
+    </footer>
+
+    <script src="globaljs.js"></script>
+    <script src="indexjs.js"></script>
+    <!-- FONT AWESOME (add once in <head>) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+</body>
+
+</html>
