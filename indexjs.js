@@ -1,3 +1,5 @@
+console.log("FAQ JS loaded");
+
 // H1 words automatically change effect
 document.addEventListener("DOMContentLoaded", () => {
     const words = [
@@ -71,4 +73,38 @@ function openOrder() {
 function closeOrder() {
     document.getElementById('orderModal').classList.remove('active');
 }
+
+// FAQ JS 
+const faqItems = document.querySelectorAll(".faq-item");
+
+faqItems.forEach(item => {
+    const question = item.querySelector(".faq-q");
+    const answer = item.querySelector(".faq-a");
+
+    // Reset on load
+    answer.style.maxHeight = null;
+
+    question.addEventListener("click", (e) => {
+        e.stopPropagation(); // VERY IMPORTANT
+
+        // Close all other FAQs
+        faqItems.forEach(other => {
+            if (other !== item) {
+                other.classList.remove("active");
+                other.querySelector(".faq-a").style.maxHeight = null;
+            }
+        });
+
+        // Toggle current
+        const isOpen = item.classList.contains("active");
+
+        item.classList.toggle("active");
+
+        if (!isOpen) {
+            answer.style.maxHeight = answer.scrollHeight + "px";
+        } else {
+            answer.style.maxHeight = null;
+        }
+    });
+});
 
