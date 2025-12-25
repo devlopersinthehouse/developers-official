@@ -1,40 +1,68 @@
 const express = require("express");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const db = require("../config/db");
-
 const router = express.Router();
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
 
-router.post("/register", async (req, res) => {
-  const { name, email, password } = req.body;
-  const hash = await bcrypt.hash(password, 10);
+const User = require("../models/User");
+const validateBody = require("../middleware/validate");
+const Joi = require("joi");
 
-  db.run(
-    "INSERT INTO users (name, email, password) VALUES (?, ?, ?)",
-    [name, email, hash],
-    err => {
-      if (err) return res.status(400).json({ message: "User exists" });
-      res.json({ message: "Registered successfully" });
-    }
-  );
+// ✅ Replaceable: frontend registration/login form fields
+const registerSchema = Joi.object({
+  name: Joi.string().required(),
+  email: Joi.string().email().required(),
+  password: Joi.string().min(6).required()
 });
 
-router.post("/login", (req, res) => {
+const loginSchema = Joi.object({
+  email: Joi.string().email().required(),
+  password: Joi.string().required()
+});
+
+// REGISTER
+router.post("/register", validateBody(registerSchema), async (req, res) => {
+  const { name, email, password } = req.body;
+
+  try {
+    let user = await User.findOne({ email });
+    if (user) return res.status(400).json({ message: "User already exists" }); 
+    // ✅ Replaceable: frontend alert message
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    user = new User({ name, email, password: hashedPassword });
+    await user.save();
+
+    const token = jwt.sign({ id: user._id, name: user.name, email: user.email }, process.env.JWT_SECRET, { expiresIn: "7d" });
+    // ✅ Replaceable: payload me frontend ke hisaab se fields add kar sakte ho
+
+    res.json({ token, user: { id: user._id, name: user.name, email: user.email } });
+    // ✅ Replaceable: frontend me jo fields chahiye, wahi send karo
+  } catch (err) {
+    res.status(500).json({ message: err.message || "Server Error" });
+  }
+});
+
+// LOGIN
+router.post("/login", validateBody(loginSchema), async (req, res) => {
   const { email, password } = req.body;
 
-  db.get("SELECT * FROM users WHERE email=?", [email], async (err, user) => {
-    if (!user) return res.status(400).json({ message: "User not found" });
+  try {
+    const user = await User.findOne({ email });
+    if (!user) return res.status(400).json({ message: "Invalid credentials" }); 
+    // ✅ Replaceable: frontend alert message
 
-    const match = await bcrypt.compare(password, user.password);
-    if (!match) return res.status(400).json({ message: "Wrong password" });
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) return res.status(400).json({ message: "Invalid credentials" }); 
+    // ✅ Replaceable: frontend alert message
 
-    const token = jwt.sign(
-      { id: user.id, email: user.email },
-      process.env.JWT_SECRET
-    );
-
-    res.json({ token });
-  });
+    const token = jwt.sign({ id: user._id, name: user.name, email: user.email }, process.env.JWT_SECRET, { expiresIn: "7d" });
+    res.json({ token, user: { id: user._id, name: user.name, email: user.email } });
+    // ✅ Replaceable: frontend required fields
+  } catch (err) {
+    res.status(500).json({ message: err.message || "Server Error" });
+  }
 });
 
-module.exports = router;
+module.exports = router; 
+// ❌ Nahi replace karna

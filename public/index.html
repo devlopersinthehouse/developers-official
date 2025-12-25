@@ -1,25 +1,58 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Dashboard</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Full Stack Dummy Frontend</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <h2>Dashboard</h2>
-  <p>Welcome! You are logged in.</p>
+  <h1>Dummy Full Stack Frontend</h1>
 
-  <h3>Your Posts</h3>
-  <ul id="postsList"></ul>
+  <!-- Login Form -->
+  <section id="login">
+    <h2>Login</h2>
+    <input type="email" id="login-email" placeholder="Email">
+    <input type="password" id="login-password" placeholder="Password">
+    <button onclick="login()">Login</button>
+    <p id="login-msg"></p>
+  </section>
 
-  <h3>Add a New Post</h3>
-  <form id="postForm">
-    <input type="text" id="title" placeholder="Title" required /><br/><br/>
-    <textarea id="content" placeholder="Content" required></textarea><br/><br/>
-    <button type="submit">Add Post</button>
-  </form>
+  <!-- Register Form -->
+  <section id="register">
+    <h2>Register</h2>
+    <input type="text" id="register-name" placeholder="Name">
+    <input type="email" id="register-email" placeholder="Email">
+    <input type="password" id="register-password" placeholder="Password">
+    <button onclick="register()">Register</button>
+    <p id="register-msg"></p>
+  </section>
 
-  <button id="logoutBtn">Logout</button>
+  <!-- Create Post Form -->
+  <section id="create-post">
+    <h2>Create Post</h2>
+    <input type="text" id="post-title" placeholder="Title">
+    <textarea id="post-content" placeholder="Content"></textarea>
+    <input type="text" id="post-tags" placeholder="Tags comma separated">
+    <button onclick="createPost()">Create Post</button>
+    <p id="post-msg"></p>
+  </section>
 
-  <script src="js/dashboard.js"></script>
+  <!-- Payment Form -->
+  <section id="payment">
+    <h2>Make Payment</h2>
+    <input type="number" id="payment-amount" placeholder="Amount">
+    <input type="text" id="payment-method" placeholder="Method">
+    <button onclick="makePayment()">Pay</button>
+    <p id="payment-msg"></p>
+  </section>
+
+  <!-- Posts List -->
+  <section id="posts-list">
+    <h2>All Posts</h2>
+    <div id="posts-container"></div>
+  </section>
+
+<script src="js/dashboard.js"></script>
 </body>
 </html>
