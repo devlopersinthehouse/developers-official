@@ -1,6 +1,8 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
+const path = require("path");
+
 const connectDB = require("./config/db");
 const errorHandler = require("./middleware/error");
 
@@ -10,25 +12,66 @@ dotenv.config();
 // Initialize express
 const app = express();
 
+// --------------------
+// Middleware
+// --------------------
+
 // ✅ Replaceable: CORS options frontend domain ke hisaab se adjust kar sakte ho
-app.use(cors()); 
-app.use(express.json()); // ❌ Nahi replace karna, JSON body parsing ke liye
+app.use(cors());
 
-// Connect to MongoDB
-connectDB(); // ❌ Nahi replace karna, db.js me ready hai
+// ❌ Nahi replace karna: JSON body parsing
+app.use(express.json());
+app.use(express.urlencoded({ extended: true })); 
+// FRONTEND: agar future me form submit hoga to useful
 
+// --------------------
+// Database Connection
+// --------------------
+
+// ❌ Nahi replace karna: db.js me already ready hai
+connectDB();
+
+// --------------------
+// Static Frontend (IMPORTANT)
+// --------------------
+
+// FRONTEND:
+// login.html, register.html, index.html yahin se serve honge
+app.use(express.static(path.join(__dirname, "public")));
+
+// --------------------
 // Routes
-const routes = require("./routes"); 
-app.use("/api", routes); 
-// ✅ Replaceable: agar frontend base path /api nahi hai, yaha adjust kar sakte ho
+// --------------------
 
-// Error handling middleware
-app.use(errorHandler); 
-// ❌ Nahi replace karna, sab backend errors centralized handle honge
+// Existing combined routes
+const routes = require("./routes");
+app.use("/api", routes);
+// ✅ Tumhara existing auth / posts routes yahin se kaam karte rahenge
 
+// --------------------
+// Fallback (Frontend routing support)
+// --------------------
+
+// FRONTEND:
+// Agar koi unknown route aaye, index.html serve hoga
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
+// --------------------
+// Error handling middleware (LAST)
+// --------------------
+
+// ❌ Nahi replace karna: centralized error handling
+app.use(errorHandler);
+
+// --------------------
 // Start server
+// --------------------
+
 const PORT = process.env.PORT || 5000;
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-  // ✅ Replaceable: console message optional, frontend affect nahi karega
+  // ✅ Replaceable: logging style optional
 });

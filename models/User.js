@@ -1,30 +1,43 @@
 const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs"); // password hashing ke liye
 
-// ✅ Replaceable: yaha schema fields tumhare frontend form fields ke hisaab se adjust kar sakte ho
-// Example: name, email, password, role etc.
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true, // ✅ Required: agar frontend me name mandatory hai
+    required: [true, "Name is required"],
   },
   email: {
     type: String,
-    required: true, // ✅ Required: frontend email input
-    unique: true,   // ✅ Optional: duplicate email allow nahi karna
+    required: [true, "Email is required"],
+    unique: true,
+    lowercase: true,
+    match: [/.+\@.+\..+/, "Please fill a valid email address"]
   },
   password: {
     type: String,
-    required: true, // ✅ Required: frontend password field
+    required: [true, "Password is required"],
+    minlength: [6, "Password must be at least 6 characters"]
   },
   role: {
     type: String,
-    default: "user", // ✅ Replaceable: agar frontend me admin/user role define karna hai
-  },
-}, { timestamps: true }); // timestamps automatic createdAt / updatedAt
+    enum: ['user', 'admin'],
+    default: 'user'
+  }
+}, { timestamps: true });
 
-// ✅ Replaceable: agar tumhe extra methods chahiye, like password compare, yaha add kar sakte ho
-// Example: userSchema.methods.matchPassword = function(enteredPassword){...}
+// 🔐 Password ko save hone se pehle hash karna
+userSchema.pre("save", async function(next) {
+  if (!this.isModified("password")) return next();
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+
+});
+
+// 🔑 Password compare karne ka method
+userSchema.methods.matchPassword = async function(enteredPassword) {
+  return await bcrypt.compare(enteredPassword, this.password);
+};
 
 const User = mongoose.model("User", userSchema);
 
-module.exports = User; // ❌ Nahi replace karna, export ke liye
+module.exports = User;

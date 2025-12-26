@@ -1,20 +1,32 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Register</title>
-  <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register Page</title>
+  <link rel="stylesheet" href="css/auth.css">
 </head>
 <body>
-  <h2>Register</h2>
-  <form id="registerForm">
-    <input type="text" id="name" placeholder="Name" required /><br/><br/>
-    <input type="email" id="email" placeholder="Email" required /><br/><br/>
-    <input type="password" id="password" placeholder="Password" required /><br/><br/>
-    <button type="submit">Register</button>
-  </form>
+  <div class="container">
+    <div class="login-card">
+      <h1>Create Account</h1>
+      <p class="subheading">Sign up to start your journey</p>
+      <form id="registerForm">
+        <input type="text" id="name" placeholder="Full Name" required>
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="password" id="password" placeholder="Password" required>
 
-  <p>Already have an account? <a href="login.html">Login</a></p>
+        <div class="options">
+          <label><input type="checkbox" id="terms"> Agree to terms</label>
+        </div>
 
-  <script src="js/auth.js"></script>
+        <button type="submit" id="registerBtn">Register</button>
+        <p id="registerMsg"></p>
+        <p>Already have an account? <a href="login.html">Login</a></p>
+      </form>
+    </div>
+  </div>
+
+<script src="js/register.js"></script>
 </body>
 </html>

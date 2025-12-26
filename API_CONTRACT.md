@@ -1,6 +1,19 @@
-# API Contract
+# API CONTRACT — Fullstack Website Backend
 
+Base URL: /api  
+Authentication: JWT (Authorization: Bearer <token>)
+
+---
+
+## 1. Authentication APIs
+
+### 1.1 Register User
 POST /api/auth/register
-POST /api/auth/login
-GET /api/posts (protected)
-POST /api/posts (protected)
+
+Request Body:
+```json
+{
+  "name": "John Doe",
+  "email": "john@example.com",
+  "password": "********"
+}

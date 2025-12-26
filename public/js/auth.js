@@ -1,45 +1,52 @@
-// REGISTER
-const registerForm = document.getElementById("registerForm");
-if (registerForm) {
-  registerForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const name = document.getElementById("name").value;
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
+const API_BASE = "http://localhost:5001/api"; // ❌ Replace if backend port/path different
+let token = "";
 
-    const res = await fetch("/api/auth/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, password }),
-    });
-
-    const data = await res.json();
-    alert(data.message);
-    if (res.ok) window.location.href = "login.html";
-  });
-}
-
-// LOGIN
 const loginForm = document.getElementById("loginForm");
-if (loginForm) {
-  loginForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
+const loginBtn = document.getElementById("loginBtn");
+const loginMsg = document.getElementById("loginMsg");
 
-    const res = await fetch("/api/auth/login", {
+loginForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+  const rememberMe = document.getElementById("rememberMe").checked;
+
+  loginBtn.disabled = true;
+  loginMsg.style.color = "#333";
+  loginMsg.innerText = "Logging in...";
+
+  try {
+    const res = await fetch(`${API_BASE}/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email, password }) // ❌ Replace field names if backend different
     });
 
     const data = await res.json();
+
     if (res.ok) {
-      localStorage.setItem("token", data.token);
-      alert("Login successful");
-      window.location.href = "dashboard.html";
+      token = data.token;
+      loginMsg.style.color = "green";
+      loginMsg.innerText = "Login successful! Redirecting...";
+      console.log("JWT Token:", token); // ❌ Optional
+
+      // Example: store token in localStorage if rememberMe
+      if (rememberMe) localStorage.setItem("jwtToken", token);
+
+      // Redirect after 1.5s (example)
+      setTimeout(() => { window.location.href = "index.html"; }, 1500);
+
     } else {
-      alert(data.message);
+      loginMsg.style.color = "#d9534f";
+      loginMsg.innerText = data.message || "Invalid email or password";
     }
-  });
-}
+
+  } catch (err) {
+    loginMsg.style.color = "#d9534f";
+    loginMsg.innerText = "Server error. Please try again.";
+    console.error(err);
+  } finally {
+    loginBtn.disabled = false;
+  }
+});
