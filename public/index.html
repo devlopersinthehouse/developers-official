@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My App - Home</title>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="container homepage">
+    <h1>Welcome to Your Personal Space</h1>
+    <p>Login to access your private data</p>
+
+    <div id="authSection">
+      <!-- Dynamic: Login button or Profile icon -->
+    </div>
+
+    <div class="personal-section" id="personalSection" style="display: none;">
+      <h2>Your Personal Notes</h2>
+      <input type="text" id="noteInput" placeholder="Write something...">
+      <button id="saveBtn">Save</button>
+      <div id="notesList"></div>
+    </div>
+  </div>
+<div id="premiumSection" style="display: none;">
+  <h2>Unlock Premium Features</h2>
+  <p>₹499 one-time payment</p>
+  <button class="submit-btn" onclick="startPayment()">Go Premium</button>
+  <div id="paymentMessage"></div>
+</div>
+  <script src="js/main.js"></script>
+</body>
+</html>
