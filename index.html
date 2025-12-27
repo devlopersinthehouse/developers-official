@@ -1,1 +1,1074 @@
-<!-- this is just for base -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DEVELOPERS — AI & Web Solutions</title>
+
+<!-- ================= FONTS & ICONS ================= -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+
+/* ==================================================
+   ROOT VARIABLES
+================================================== */
+:root{
+  --primary:#00ffa2;
+  --secondary:#22d3ee;
+  --dark:#000;
+  --glass:rgba(255,255,255,0.06);
+  --border:rgba(255,255,255,0.12);
+  --text-muted:#ccc;
+}
+
+/* ==================================================
+   RESET
+================================================== */
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  font-family:'Inter',sans-serif;
+  background:#000;
+  color:#fff;
+  overflow-x:hidden;
+}
+
+/* ==================================================
+   BACKGROUND GRID
+================================================== */
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size:60px 60px;
+  z-index:-3;
+}
+
+/* ==================================================
+   STARS
+================================================== */
+body::after{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:
+    radial-gradient(1px 1px at 10px 20px, rgba(255,255,255,.9), transparent),
+    radial-gradient(1px 1px at 40px 70px, rgba(255,255,255,.8), transparent),
+    radial-gradient(2px 2px at 90px 40px, rgba(255,255,255,.7), transparent),
+    radial-gradient(1px 1px at 130px 80px, rgba(255,255,255,.6), transparent),
+    radial-gradient(2px 2px at 170px 120px, rgba(255,255,255,.8), transparent),
+    radial-gradient(1px 1px at 200px 30px, rgba(255,255,255,.7), transparent),
+    radial-gradient(2px 2px at 250px 150px, rgba(255,255,255,.9), transparent);
+
+  background-size: 300px 300px;
+  animation: starsMove 60s linear infinite, twinkle 4s ease-in-out infinite alternate;
+  z-index:-2;
+  opacity:1;
+}
+
+@keyframes starsMove{
+  from{background-position:0 0;}
+  to{background-position:-600px 600px;}
+}
+
+@keyframes twinkle{
+  0%{opacity:.35}
+  100%{opacity:1}
+}
+
+/* ==================================================
+   NAVBAR
+================================================== */
+nav{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  padding:20px 60px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  z-index:1000;
+  transition:.4s;
+}
+
+nav.scrolled{
+  background:rgba(0,0,0,.8);
+  backdrop-filter:blur(20px);
+}
+
+.logo{
+  font-size:32px;
+  font-weight:900;
+  background:linear-gradient(90deg,var(--primary),var(--secondary));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+.menu{
+  display:flex;
+  gap:32px;
+  padding:14px 32px;
+  background:var(--glass);
+  border-radius:50px;
+  border:1px solid var(--border);
+}
+
+.menu a{
+  text-decoration:none;
+  color:#fff;
+  font-weight:500;
+  transition:.3s;
+}
+
+.menu a:hover{
+  color:var(--primary);
+}
+
+.login{
+  padding:14px 32px;
+  border-radius:50px;
+  background:linear-gradient(90deg,var(--primary),var(--secondary));
+  color:#000;
+  font-weight:700;
+  text-decoration:none;
+}
+
+/* ==================================================
+   HERO SECTION
+================================================== */
+.hero{
+  min-height:100vh;
+  padding:160px 60px 120px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:100px;
+  max-width:1600px;
+  margin:auto;
+}
+
+.hero h1{
+  font-size:78px;
+  font-weight:900;
+  line-height:1.05;
+}
+
+.hero h1 span{
+  background:linear-gradient(90deg,var(--primary),var(--secondary));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+.hero p{
+  margin:30px 0 40px;
+  font-size:22px;
+  color:var(--text-muted);
+  max-width:560px;
+}
+
+.cta{
+  padding:22px 50px;
+  font-size:20px;
+  font-weight:800;
+  border-radius:50px;
+  border:none;
+  cursor:pointer;
+  background:linear-gradient(90deg,var(--primary),var(--secondary));
+  box-shadow:0 20px 50px rgba(0,255,162,.4);
+}
+
+/* ==================================================
+   HERO VIDEO
+================================================== */
+.video-wrapper{
+  position:relative;
+  width:640px;
+  max-width:100%;
+  margin-left:auto;
+  transform: translateY(20px);
+}
+
+.video-card{
+  background:rgba(20,20,30,0.85);
+  border-radius:28px;
+  border:1px solid rgba(0,255,255,0.3);
+  overflow:hidden;
+  box-shadow:
+    0 30px 80px rgba(0,0,0,.9),
+    0 0 40px rgba(0,255,255,.25);
+}
+
+.video-container{
+  position:relative;
+  width:100%;
+  padding-bottom:62%;
+  background:#000;
+}
+
+.video-container video{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+/* Neon strips */
+.neon-strip{
+  position:absolute;
+  background:linear-gradient(180deg,var(--primary),var(--secondary));
+  filter:blur(6px);
+  opacity:.9;
+}
+
+.neon-strip.top-right{
+  width:120px;
+  height:3px;
+  top:-8px;
+  right:40px;
+}
+
+.neon-strip.right-side{
+  width:3px;
+  height:160px;
+  top:40px;
+  right:-8px;
+}
+
+/* ==================================================
+   GENERIC SECTIONS
+================================================== */
+section{
+  padding:140px 60px;
+  max-width:1400px;
+  margin:auto;
+}
+
+.section-title{
+  font-size:56px;
+  font-weight:900;
+  text-align:center;
+  margin-bottom:80px;
+  background:linear-gradient(90deg,#fff,var(--primary));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+/* ==================================================
+   TRUSTED BY
+================================================== */
+.trusted{
+  text-align:center;
+}
+
+.trusted-logos{
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:40px;
+}
+
+.trusted-logos span{
+  font-size:26px;
+  opacity:.5;
+  font-weight:700;
+}
+
+/* ==================================================
+   SERVICES
+================================================== */
+.services{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:30px;
+}
+
+.service{
+  padding:40px;
+  background:rgba(255,255,255,.05);
+  border-radius:24px;
+  border:1px solid var(--border);
+  text-align:center;
+  font-size:22px;
+  font-weight:600;
+  transition:.4s;
+}
+
+.service:hover{
+  transform:translateY(-12px);
+  border-color:var(--primary);
+}
+
+/* ==================================================
+   PROCESS
+================================================== */
+.process{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:30px;
+}
+
+.step{
+  padding:32px;
+  border-radius:50px;
+  background:linear-gradient(135deg,rgba(0,255,162,.15),rgba(34,211,238,.1));
+  font-size:20px;
+  font-weight:700;
+  text-align:center;
+}
+
+/* ==================================================
+   PRICING
+================================================== */
+.pricing{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:40px;
+}
+
+.price-card{
+  padding:50px;
+  border-radius:30px;
+  background:rgba(255,255,255,.05);
+  border:1px solid var(--border);
+  text-align:center;
+}
+
+.price{
+  font-size:48px;
+  font-weight:900;
+  margin:20px 0;
+}
+
+/* ==================================================
+   FAQ
+================================================== */
+.faq{
+  max-width:900px;
+  margin:auto;
+}
+
+.faq-item{
+  margin-bottom:16px;
+  background:rgba(255,255,255,.05);
+  border-radius:16px;
+  border:1px solid var(--border);
+}
+
+.faq-q{
+  padding:24px;
+  cursor:pointer;
+  font-weight:600;
+}
+
+.faq-a{
+  max-height:0;
+  overflow:hidden;
+  transition:.4s;
+}
+
+.faq-a p{
+  padding:24px;
+  color:var(--text-muted);
+}
+
+/* ==================================================
+   FOOTER
+================================================== */
+footer{
+  padding:120px 60px 40px;
+  border-top:1px solid var(--border);
+  text-align:center;
+}
+
+.socials a{
+  margin:0 14px;
+  font-size:26px;
+  color:#fff;
+}
+
+/* ==================================================
+   RESPONSIVE
+================================================== */
+@media(max-width:1000px){
+  .hero{
+    grid-template-columns:1fr;
+    gap:60px;
+    text-align:center;
+  }
+
+  .video-wrapper{
+    margin:40px auto 0;
+    width:560px;
+  }
+}
+
+@media(max-width:600px){
+  nav{padding:16px 24px;}
+
+  .hero{
+    padding:140px 24px 80px;
+  }
+
+  .hero h1{
+    font-size:44px;
+  }
+
+  .hero p{
+    font-size:18px;
+  }
+
+  .video-wrapper{
+    width:100%;
+  }
+
+  .neon-strip.top-right{
+    width:80px;
+    right:20px;
+  }
+
+  .neon-strip.right-side{
+    height:100px;
+    top:30px;
+  }
+}
+
+.rotating-word{
+  display:inline-block;
+  min-width:200px;
+  text-align:left;
+  margin-right:-30px;
+
+  background:linear-gradient(90deg,var(--primary),var(--secondary));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+
+  font-weight:900;
+  position:relative;
+}
+
+/* typing cursor */
+.rotating-word::after{
+  content:"|";
+  margin-left:4px;
+  color:var(--primary);
+  animation: blink 1s infinite;
+}
+
+@keyframes blink{
+  0%,50%,100%{opacity:1}
+  25%,75%{opacity:0}
+}
+
+.ai-btn {
+  position: relative;
+  padding: 20px 64px;
+  border-radius: 999px;
+  border: 2px solid rgba(100, 200, 255, 0.4); /* Soft neon border */
+  background: #05090c; /* Pure dark bg */
+  cursor: pointer;
+  overflow: hidden;
+  box-shadow: 0 0 30px rgba(100, 200, 255, 0.3);
+  transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  font-size: 18px;
+  font-weight: 800;
+  color: #eaffff;
+  text-shadow: 0 0 12px rgba(100, 255, 255, 0.6);
+  z-index: 1;
+  isolation: isolate; /* Glow layering ke liye */
+}
+
+/* 🔥 BADA ROTATING RING - Button ke peeche pura bada circle ghumega */
+.ai-btn::before {
+  content: "";
+  position: absolute;
+  inset: -50px; /* Yeh key hai – negative inset se ring button se bahut badi ban gayi */
+  background: conic-gradient(
+    from 0deg,
+    #ff00ff,  /* Magenta */
+    #aa00ff,
+    #4400ff,
+    #0088ff,  /* Blue */
+    #00ffff,  /* Cyan */
+    #00ffaa,  /* Green */
+    #aaff00,
+    #ffff00,  /* Yellow */
+    #ff8800,  /* Orange */
+    #ff0044,  /* Red */
+    #ff00ff
+  );
+  animation: spin 12s linear infinite; /* Slow premium rotation */
+  opacity: 0.7;
+  filter: blur(20px); /* Soft glow se bahar leak karega */
+  z-index: -1;
+}
+
+/* Dark glass cover – text clear rahe aur colors thoda dikhein andar se */
+.ai-btn::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border-radius: 999px;
+  background: linear-gradient(145deg, rgba(5,10,20,0.95), rgba(0,5,15,0.98));
+  z-index: 1;
+}
+
+/* Text */
+.ai-btn span {
+  position: relative;
+  z-index: 2;
+  transition: text-shadow 0.4s ease;
+}
+
+/* 🔥 HOVER EFFECT – Smooth color change + tez spin + strong glow */
+.ai-btn:hover {
+  border-color: rgba(0, 255, 255, 0.8);
+  box-shadow: 0 0 70px rgba(100, 200, 255, 0.7), 0 0 120px rgba(255, 100, 255, 0.4);
+  transform: translateY(-4px) scale(1.03);
+
+  /* Hover pe ring tez ghumegi + hue shift (color smoothly change) */
+  &::before {
+    animation-duration: 3s; /* Tez spin */
+    filter: blur(15px) hue-rotate(90deg) brightness(1.3); /* Color shift pink se cyan-green */
+    opacity: 0.9;
+  }
+
+  span {
+    text-shadow: 0 0 25px rgba(0, 255, 255, 1);
+  }
+}
+
+/* Click */
+.ai-btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.login-btn {
+  position: relative;
+  padding: 12px 32px; /* ← Yeh change: pehle 15px 44px tha, ab chhota */
+  border-radius: 999px;
+  border: 2px solid rgba(0, 255, 220, 0.7);
+  background: linear-gradient(135deg, 
+    rgba(0, 180, 220, 0.3),
+    rgba(0, 240, 255, 0.35)
+  );
+  cursor: pointer;
+  overflow: hidden;
+  box-shadow: 
+    0 0 25px rgba(0, 255, 220, 0.6),
+    inset 0 0 30px rgba(255, 255, 255, 0.1);
+  transition: border 0.4s ease, box-shadow 0.4s ease;
+  font-size: 15px; /* ← Yeh bhi thoda chhota (pehle 17px tha) */
+  font-weight: 800;
+  color: #ffffff;
+  text-shadow: 0 0 15px rgba(0, 255, 255, 0.9);
+  backdrop-filter: blur(15px);
+}
+
+/* Mouse Follow Spotlight Glow */
+.login-btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 999px;
+  background: radial-gradient(
+    circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(0, 255, 255, 0.5) 0%,
+    rgba(0, 255, 220, 0.3) 30%,
+    transparent 60%
+  );
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Text + Arrow */
+.login-btn span {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 6px; /* ← Arrow aur text ke beech gap bhi kam kiya */
+}
+
+/* Hover */
+.login-btn:hover {
+  border-color: rgba(0, 255, 255, 1);
+  box-shadow: 
+    0 0 40px rgba(0, 255, 220, 1),
+    0 0 80px rgba(0, 255, 255, 0.6);
+
+  &::before {
+    opacity: 1;
+  }
+}
+
+/* Click */
+.login-btn:active {
+  transform: scale(0.98);
+}
+
+.stack-wrapper {
+  padding: 80px 20px;
+  background: linear-gradient(to bottom, #0a0e17, #000000);
+  overflow: hidden;
+}
+
+.stack-wrapper .title {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.stack-slider {
+  display: flex;
+  gap: 30px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: 20px 0;
+  scrollbar-width: none;
+}
+
+.stack-slider::-webkit-scrollbar {
+  display: none;
+}
+
+.stack-card {
+  min-width: 320px;
+  max-width: 380px;
+  scroll-snap-align: center;
+  flex-shrink: 0;
+}
+
+.stack-inner {
+  background: rgba(15, 25, 45, 0.6);
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 255, 220, 0.2);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  transition: transform 0.4s ease;
+}
+
+.stack-card:hover .stack-inner {
+  transform: translateY(-10px);
+  border-color: rgba(0, 255, 220, 0.6);
+}
+
+.stack-content {
+  padding: 30px;
+  color: white;
+}
+
+.stack-content h2 {
+  font-size: 28px;
+  margin-bottom: 15px;
+  color: #4ade80;
+}
+
+.stack-content p {
+  margin-bottom: 25px;
+  opacity: 0.9;
+}
+
+.features-list {
+  list-style: none;
+  margin-top: 20px;
+}
+
+.features-list li {
+  padding: 8px 0;
+  opacity: 0.8;
+  position: relative;
+  padding-left: 20px;
+}
+
+.features-list li::before {
+  content: "✓";
+  color: #4ade80;
+  position: absolute;
+  left: 0;
+}
+
+.price-box {
+  background: rgba(74, 222, 128, 0.15);
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  border: 1px solid rgba(74, 222, 128, 0.3);
+}
+
+.price-box span {
+  font-size: 32px;
+  font-weight: bold;
+  color: #4ade80;
+}
+
+.stack-video {
+  width: 100%;
+  height: 220px;
+  overflow: hidden;
+}
+
+.stack-video video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .stack-card {
+    min-width: 280px;
+  }
+  .stack-content {
+    padding: 25px;
+  }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- ================= NAV ================= -->
+<nav id="nav">
+  <div class="logo">DEVELOPERS</div>
+  <div class="menu">
+    <a href="#services">Services</a>
+    <a href="#process">Process</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#faq">FAQ</a>
+  </div>
+  <button class="login-btn" id="loginBtn">
+  <span>Log In →</span>
+</button>
+</nav>
+
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <div>
+    <h1>
+      Building Powerful<br>
+      <span>App & Web Solutions</span><br>
+      One <span class="rotating-word"></span>.
+    </h1>
+    <p>
+      We design, build & scale AI-powered products and modern web platforms
+      for startups and growing businesses.
+    </p>
+    <button class="ai-btn">
+  <div class="flux-ring"></div>
+  <span>Get Started Now →</span>
+</button>
+</div>
+
+  <div class="video-wrapper">
+    <div class="neon-strip top-right"></div>
+    <div class="neon-strip right-side"></div>
+
+    <div class="video-card">
+      <div class="video-container">
+        <video autoplay muted loop playsinline>
+          <source src="https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4">
+        </video>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TRUSTED ================= -->
+<section class="trusted">
+  <h2 class="section-title">Trusted By</h2>
+  <div class="trusted-logos">
+    <span>Google</span>
+    <span>Meta</span>
+    <span>OpenAI</span>
+    <span>Startups</span>
+    <span>Agencies</span>
+  </div>
+</section>
+
+<!-- ================= SERVICES ================= -->
+<section id="services">
+  <h2 class="section-title">What We Build</h2>
+  <div class="services">
+    <div class="service">🤖 Apps</div>
+    <div class="service">🌐 Web Apps</div>
+    <div class="service">⚙ Automation</div>
+    <div class="service">📊 Dashboards</div>
+  </div>
+</section>
+
+<!-- TECH STACK SLIDER SECTION -->
+<section class="stack-wrapper">
+    <div class="title">
+        <h2>Our Tech Stacks & Pricing</h2>
+        <p>Swipe or scroll to explore options</p>
+    </div>
+
+    <div class="stack-slider">
+        <!-- CARD 1 - Static Websites -->
+        <div class="stack-card">
+            <div class="stack-inner">
+                <div class="stack-content">
+                    <h2>Static Websites</h2>
+                    <p>Fast, SEO-optimized landing pages & portfolios. Perfect for businesses & personal brands.</p>
+                    <div class="pricing-grid">
+                        <div class="price-box">
+                            <h4>Starting at</h4>
+                            <span>₹5,000</span>
+                        </div>
+                    </div>
+                    <ul class="features-list">
+                        <li>Responsive Design</li>
+                        <li>Fast Loading</li>
+                        <li>SEO Ready</li>
+                        <li>Hosting Setup</li>
+                    </ul>
+                </div>
+                <div class="stack-video">
+                    <video autoplay muted loop playsinline poster="fallback-static.jpg">
+                        <source src="static-demo.mp4" type="video/mp4">
+                        Your browser does not support video.
+                    </video>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 2 - Dynamic Websites -->
+        <div class="stack-card">
+            <div class="stack-inner">
+                <div class="stack-content">
+                    <h2>Dynamic Websites</h2>
+                    <p>CMS, blogs, admin panels with database & user management.</p>
+                    <div class="pricing-grid">
+                        <div class="price-box">
+                            <h4>Starting at</h4>
+                            <span>₹12,000</span>
+                        </div>
+                    </div>
+                    <ul class="features-list">
+                        <li>Admin Dashboard</li>
+                        <li>Content Management</li>
+                        <li>User Authentication</li>
+                        <li>Database Integration</li>
+                    </ul>
+                </div>
+                <div class="stack-video">
+                    <video autoplay muted loop playsinline>
+                        <source src="dynamic-demo.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 3 - Web Applications -->
+        <div class="stack-card">
+            <div class="stack-inner">
+                <div class="stack-content">
+                    <h2>Web Applications</h2>
+                    <p>Full-stack SaaS, dashboards, CRM & scalable platforms.</p>
+                    <div class="pricing-grid">
+                        <div class="price-box">
+                            <h4>Starting at</h4>
+                            <span>₹25,000</span>
+                        </div>
+                    </div>
+                    <ul class="features-list">
+                        <li>Real-time Features</li>
+                        <li>API Integration</li>
+                        <li>Payment Gateway</li>
+                        <li>Scalable Backend</li>
+                    </ul>
+                </div>
+                <div class="stack-video">
+                    <video autoplay muted loop playsinline>
+                        <source src="webapp-demo.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 4 - Mobile Apps -->
+        <div class="stack-card">
+            <div class="stack-inner">
+                <div class="stack-content">
+                    <h2>Mobile Apps</h2>
+                    <p>Native Android or cross-platform apps with modern UI.</p>
+                    <div class="pricing-grid">
+                        <div class="price-box">
+                            <h4>Starting at</h4>
+                            <span>₹40,000</span>
+                        </div>
+                    </div>
+                    <ul class="features-list">
+                        <li>Native Performance</li>
+                        <li>Push Notifications</li>
+                        <li>Offline Support</li>
+                        <li>Play Store Deploy</li>
+                    </ul>
+                </div>
+                <div class="stack-video">
+                    <video autoplay muted loop playsinline>
+                        <source src="app-demo.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ================= PROCESS ================= -->
+<section id="process">
+  <h2 class="section-title">How We Work</h2>
+  <div class="process">
+    <div class="step">💡 Idea</div>
+    <div class="step">🎨 Design</div>
+    <div class="step">🧑‍💻 Build</div>
+    <div class="step">🚀 Launch</div>
+    <div class="step">📈 Scale</div>
+  </div>
+</section>
+
+<!-- ================= PRICING ================= -->
+<section id="pricing">
+  <h2 class="section-title">Pricing</h2>
+  <div class="pricing">
+    <div class="price-card">
+      <h3>Starter</h3>
+      <div class="price">$299</div>
+      <p>Landing Pages</p>
+    </div>
+    <div class="price-card">
+      <h3>Pro</h3>
+      <div class="price">$999</div>
+      <p>Web Apps</p>
+    </div>
+    <div class="price-card">
+      <h3>Enterprise</h3>
+      <div class="price">Custom</div>
+      <p>Apps + SaaS</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FAQ ================= -->
+<section id="faq">
+  <h2 class="section-title">FAQ</h2>
+  <div class="faq">
+    <div class="faq-item">
+      <div class="faq-q">How long does a project take?</div>
+      <div class="faq-a"><p>Usually 2–6 weeks depending on complexity.</p></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Do you build websites?</div>
+      <div class="faq-a"><p>Yes. Website-first is our core strength.</p></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Do you build apps?</div>
+      <div class="faq-a"><p>Yes. Apps is our second core strength.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="logo">DEVELOPERS</div>
+  <p>© 2025 DEVELOPERS. All rights reserved.</p>
+  <div class="socials">
+    <a href="#"><i class="fab fa-twitter"></i></a>
+    <a href="#"><i class="fab fa-github"></i></a>
+    <a href="#"><i class="fab fa-discord"></i></a>
+  </div>
+</footer>
+
+<script>
+window.addEventListener("scroll",()=>{
+  document.getElementById("nav")
+    .classList.toggle("scrolled",window.scrollY>40);
+});
+
+document.querySelectorAll(".faq-q").forEach(q=>{
+  q.onclick=()=>{
+    const a=q.nextElementSibling;
+    a.style.maxHeight = a.style.maxHeight ? null : a.scrollHeight+"px";
+  }
+});
+</script>
+
+<script>
+  const words = ["Team", "Vision", "Reality", "Impact", "Future"];
+const wordSpan = document.querySelector(".rotating-word");
+
+let wordIndex = 0;
+let charIndex = 0;
+let isDeleting = false;
+
+function typeEffect(){
+  const currentWord = words[wordIndex];
+
+  if(!isDeleting){
+    wordSpan.textContent = currentWord.substring(0, charIndex + 1);
+    charIndex++;
+
+    if(charIndex === currentWord.length){
+      setTimeout(() => isDeleting = true, 1500);
+    }
+  } else {
+    wordSpan.textContent = currentWord.substring(0, charIndex - 1);
+    charIndex--;
+
+    if(charIndex === 0){
+      isDeleting = false;
+      wordIndex = (wordIndex + 1) % words.length;
+    }
+  }
+
+  const speed = isDeleting ? 60 : 120;
+  setTimeout(typeEffect, speed);
+}
+
+typeEffect();
+</script>
+
+<script>
+  const loginBtn = document.getElementById('loginBtn');
+
+  loginBtn.addEventListener('mousemove', (e) => {
+    const rect = loginBtn.getBoundingClientRect();
+    const x = e.clientX - rect.left; // Mouse X relative to button
+    const y = e.clientY - rect.top;  // Mouse Y relative to button
+
+    // Percentage mein convert (0-100%)
+    const mouseX = (x / rect.width) * 100 + '%';
+    const mouseY = (y / rect.height) * 100 + '%';
+
+    loginBtn.style.setProperty('--mouse-x', mouseX);
+    loginBtn.style.setProperty('--mouse-y', mouseY);
+  });
+
+  // Optional: Mouse leave pe center kar do
+  loginBtn.addEventListener('mouseleave', () => {
+    loginBtn.style.setProperty('--mouse-x', '50%');
+    loginBtn.style.setProperty('--mouse-y', '50%');
+  });
+</script>
+
+</body>
+</html>
