@@ -3,6 +3,7 @@
 │   │   ├── authController.js
 │   │   ├── paymentController.js
 │   │   └── todoController.js
+│   ├── node_modules/ # files not shown here
 │   ├── middleware/
 │   │   └── auth.js
 │   ├── models/
