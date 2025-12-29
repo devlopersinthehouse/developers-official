@@ -3,42 +3,52 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
-const cookieParser = require('cookie-parser');  // ← NAYA ADD
+const cookieParser = require('cookie-parser');
+const rateLimit = require('express-rate-limit');  // ← NAYA ADD
 
 const todoRoutes = require('./routes/todos');
 const authRoutes = require('./routes/auth');
-const paymentRoutes = require('./routes/payment');
-app.use('/api/payment', paymentRoutes);
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Rate Limiting for Login & Forgot (security)
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // 5 attempts per IP
+  message: { message: 'Too many login attempts. Try again after 15 minutes.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+app.use('/api/auth/login', loginLimiter);
+app.use('/api/auth/forgot', loginLimiter);
+
 // Middleware
 app.use(cors({
-  origin: 'http://localhost:5000',  // Ya '*' development mein
-  credentials: true                 // Cookie bhejne ke liye zaroori
+  origin: 'http://localhost:5000',
+  credentials: true
 }));
 app.use(express.json());
-app.use(cookieParser());            // ← NAYA ADD - cookie read karne ke liye
+app.use(cookieParser());
 
-// ===== Static files serve karo (HTML, CSS, JS) =====
+// Static files
 app.use(express.static(path.join(__dirname, '../public')));
 
 // API Routes
 app.use('/api/todos', todoRoutes);
 app.use('/api/auth', authRoutes);
 
-// ===== Fallback route (SPA behavior) =====
+// Fallback
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
-// MongoDB Connection
+// MongoDB
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('✅ MongoDB connected successfully'))
   .catch(err => console.error('❌ MongoDB connection error:', err));
 
-// Server Start
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
-  console.log(`🌐 Open browser and go to: http://localhost:${PORT}`);
 });

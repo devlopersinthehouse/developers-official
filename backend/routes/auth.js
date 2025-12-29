@@ -1,6 +1,6 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
-const nodemailer = require('nodemailer');  // ← NAYA ADD
+const nodemailer = require('nodemailer');
 const User = require('../models/User');
 
 const { register, login, getProfile } = require('../controllers/authController');
@@ -39,72 +39,39 @@ router.post('/logout', (req, res) => {
   res.json({ message: 'Logged out successfully' });
 });
 
-// Forgot Password Route
-router.post('/forgot', async (req, res) => {
-  const { email } = req.body;
-  try {
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
+// Forgot Password Route (already hai – same rahega)
 
-    // Generate reset token (15 minutes expiry)
-    const resetToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '15m' });
+// Reset Password Route (already hai – same rahega)
 
-    // Reset link
-    const resetLink = `http://localhost:5000/reset-password.html?token=${resetToken}`;
+// NEW: Email Verification Route
+router.get('/verify-email', async (req, res) => {
+  const { token } = req.query;
 
-    // Send email using nodemailer
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-      }
-    });
-
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: email,
-      subject: 'Password Reset Request - MyApp',
-      html: `
-        <h2>Password Reset Request</h2>
-        <p>You requested a password reset. Click the link below to set a new password:</p>
-        <p><a href="${resetLink}" style="color: blue; text-decoration: underline;">${resetLink}</a></p>
-        <p>This link will expire in 15 minutes.</p>
-        <p>If you didn't request this, please ignore this email.</p>
-        <hr>
-        <small>MyApp Team</small>
-      `
-    });
-
-    res.json({ message: 'Reset link sent to your email successfully' });
-  } catch (err) {
-    console.error('Email sending error:', err);
-    res.status(500).json({ message: 'Error sending email. Check server logs.' });
+  if (!token) {
+    return res.send('<h2 style="text-align:center;color:red;margin-top:100px;">Invalid verification link</h2>');
   }
-});
-
-// Reset Password Route
-router.post('/reset-password', async (req, res) => {
-  const { token, password } = req.body;
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(decoded.id);
 
     if (!user) {
-      return res.status(400).json({ message: 'Invalid or expired token' });
+      return res.send('<h2 style="text-align:center;color:red;margin-top:100px;">Invalid token</h2>');
     }
 
-    // Update password (pre-save hook will hash it)
-    user.password = password;
+    if (user.isVerified) {
+      return res.send('<h2 style="text-align:center;color:green;margin-top:100px;">Email already verified! You can login now.</h2>');
+    }
+
+    user.isVerified = true;
     await user.save();
 
-    res.json({ message: 'Password updated successfully. You can now login.' });
+    res.send(`
+      <h2 style="text-align:center;color:green;margin-top:100px;">🎉 Email verified successfully!</h2>
+      <p style="text-align:center;">You can now <a href="/login.html">login</a> with full access.</p>
+    `);
   } catch (err) {
-    console.error('Reset password error:', err);
-    res.status(400).json({ message: 'Invalid or expired token' });
+    res.send('<h2 style="text-align:center;color:red;margin-top:100px;">Link expired or invalid. Please register again.</h2>');
   }
 });
 

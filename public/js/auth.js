@@ -44,7 +44,7 @@ function clearMessages() {
   });
 }
 
-// Login (same)
+// Login
 document.getElementById('loginBtn').addEventListener('click', async () => {
   const email = document.getElementById('loginEmail').value.trim();
   const password = document.getElementById('loginPassword').value;
@@ -63,19 +63,23 @@ document.getElementById('loginBtn').addEventListener('click', async () => {
     loader.style.display = 'none';
 
     if (res.ok) {
-      showMessage('loginMessage', 'Login successful! Redirecting...', 'success');
+      showMessage('loginMessage', 'Login successful! Redirecting to dashboard...', 'success');
       setTimeout(() => window.location.href = '/', 1500);
     } else {
       const data = await res.json();
-      showMessage('loginMessage', data.message || 'Invalid credentials', 'error');
+      let msg = data.message || 'Invalid credentials';
+      if (msg.includes('verify')) {
+        msg = 'Please verify your email first. Check your inbox (and spam folder) for the verification link.';
+      }
+      showMessage('loginMessage', msg, 'error');
     }
   } catch (err) {
     loader.style.display = 'none';
-    showMessage('loginMessage', 'Network error', 'error');
+    showMessage('loginMessage', 'Network error. Please try again.', 'error');
   }
 });
 
-// Register (same)
+// Register
 document.getElementById('registerBtn').addEventListener('click', async () => {
   const name = document.getElementById('regName').value.trim();
   const email = document.getElementById('regEmail').value.trim();
@@ -92,22 +96,22 @@ document.getElementById('registerBtn').addEventListener('click', async () => {
       body: JSON.stringify({ name, email, password })
     });
 
+    const data = await res.json();
     loader.style.display = 'none';
 
     if (res.ok) {
-      showMessage('registerMessage', 'Account created! Redirecting...', 'success');
-      setTimeout(() => window.location.href = '/', 1500);
+      showMessage('registerMessage', 'Account created successfully! Please check your email for the verification link. You can login after verification.', 'success');
+      // Redirect mat karo – user ko message dikhao
     } else {
-      const data = await res.json();
-      showMessage('registerMessage', data.message || 'Registration failed', 'error');
+      showMessage('registerMessage', data.message || 'Registration failed. Try again.', 'error');
     }
   } catch (err) {
     loader.style.display = 'none';
-    showMessage('registerMessage', 'Network error', 'error');
+    showMessage('registerMessage', 'Network error. Please try again.', 'error');
   }
 });
 
-// Forgot Password - Real Email Call
+// Forgot Password
 document.getElementById('forgotBtn').addEventListener('click', async () => {
   const email = document.getElementById('forgotEmail').value.trim();
   const loader = document.getElementById('forgotLoader');
@@ -134,6 +138,6 @@ document.getElementById('forgotBtn').addEventListener('click', async () => {
     showMessage('forgotMessage', data.message, res.ok ? 'success' : 'error');
   } catch (err) {
     loader.style.display = 'none';
-    showMessage('forgotMessage', 'Network error. Check console.', 'error');
+    showMessage('forgotMessage', 'Network error. Please try again.', 'error');
   }
 });

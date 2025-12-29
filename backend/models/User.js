@@ -5,17 +5,16 @@ const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  isPremium: { type: Boolean, default: false }  // ← Ye properly add kar diya
+  isPremium: { type: Boolean, default: false },
+  isVerified: { type: Boolean, default: false }  // ← NAYA ADD – email verification ke liye
 }, { timestamps: true });
 
-// Password hash before save
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
   this.password = await bcrypt.hash(this.password, 12);
   next();
 });
 
-// Compare password method
 userSchema.methods.comparePassword = async function (candidatePassword) {
   return await bcrypt.compare(candidatePassword, this.password);
 };
