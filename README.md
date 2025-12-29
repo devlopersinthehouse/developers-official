@@ -1,1 +1,2 @@
-<b> NAMASKAR Sajjano aur Sajjano </b>
+<b style ="text-align: center ;color: linear-gradient(135deg, #ff0000ff, #ffbb00ff, #ffff00ff);"> HELLO VISTIORS! </b><br>
+<p style = "text-align: center; color: linear-gradient(135deg, #9000ffff, #00ffffff, #fb51c8ff) "> This is the domain of OM and here I only do frontend work from the help of HTML, CSS and JS. So, see the code and if anything looks off or wanna give any advise, then email me on studybio2025@gmail.com</p>
