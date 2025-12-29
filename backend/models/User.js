@@ -6,7 +6,9 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   isPremium: { type: Boolean, default: false },
-  isVerified: { type: Boolean, default: false }  // ← NAYA ADD – email verification ke liye
+  isVerified: { type: Boolean, default: false },
+  resetPasswordToken: { type: String },
+  resetPasswordExpire: { type: Date }
 }, { timestamps: true });
 
 userSchema.pre('save', async function (next) {

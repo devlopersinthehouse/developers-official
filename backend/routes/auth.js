@@ -1,30 +1,17 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
-const nodemailer = require('nodemailer');
 const User = require('../models/User');
 
-const { register, login, getProfile } = require('../controllers/authController');
+const { register, login, getProfile, forgotPassword, resetPassword } = require('../controllers/authController');
 const { protect } = require('../middleware/auth');
 
 const router = express.Router();
 
 // Register route
-router.post('/register', async (req, res, next) => {
-  try {
-    await register(req, res, next);
-  } catch (err) {
-    next(err);
-  }
-});
+router.post('/register', register);
 
 // Login route
-router.post('/login', async (req, res, next) => {
-  try {
-    await login(req, res, next);
-  } catch (err) {
-    next(err);
-  }
-});
+router.post('/login', login);
 
 // Profile route (protected)
 router.get('/profile', protect, getProfile);
@@ -39,11 +26,13 @@ router.post('/logout', (req, res) => {
   res.json({ message: 'Logged out successfully' });
 });
 
-// Forgot Password Route (already hai – same rahega)
+// Forgot Password Route
+router.post('/forgot', forgotPassword);
 
-// Reset Password Route (already hai – same rahega)
+// Reset Password Route
+router.post('/reset', resetPassword);
 
-// NEW: Email Verification Route
+// Email Verification Route
 router.get('/verify-email', async (req, res) => {
   const { token } = req.query;
 

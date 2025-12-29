@@ -1,6 +1,8 @@
-console.log("FAQ JS loaded");
+console.log("Index JS loaded");
 
-// H1 words automatically change effect
+/* =========================
+   TYPING EFFECT (HERO)
+========================= */
 document.addEventListener("DOMContentLoaded", () => {
     const words = [
         "Website & App",
@@ -11,6 +13,9 @@ document.addEventListener("DOMContentLoaded", () => {
     ];
 
     const textEl = document.getElementById("typing-text");
+    
+    if (!textEl) return; // Safety check
+    
     let wordIndex = 0;
     let charIndex = 0;
     let isDeleting = false;
@@ -35,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
         setTimeout(typeEffect, isDeleting ? 60 : 90);
     }
 
-    // 🔥 Scroll Trigger (Cursor AI style)
+    // Scroll Trigger
     const observer = new IntersectionObserver(entries => {
         entries.forEach(entry => {
             if (entry.isIntersecting && !started) {
@@ -45,10 +50,15 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }, { threshold: 0.6 });
 
-    observer.observe(document.querySelector(".hero-title"));
+    const heroTitle = document.querySelector(".hero-title");
+    if (heroTitle) {
+        observer.observe(heroTitle);
+    }
 });
 
-// pricing-calculator
+/* =========================
+   PRICING CALCULATOR
+========================= */
 function calculate() {
     const pages = document.getElementById('pages').value;
     const base = document.getElementById('projectType').value;
@@ -59,52 +69,58 @@ function calculate() {
     return price;
 }
 
-document.querySelectorAll('#pages, #projectType, #tech')
-    .forEach(el => el.addEventListener('input', calculate));
+// Auto-calculate on input change
+document.addEventListener('DOMContentLoaded', () => {
+    const pricingInputs = document.querySelectorAll('#pages, #projectType, #tech');
+    if (pricingInputs.length > 0) {
+        pricingInputs.forEach(el => el.addEventListener('input', calculate));
+        calculate(); // Initial calculation
+    }
+});
 
-calculate();
+/* =========================
+   FAQ ACCORDION
+========================= */
+document.addEventListener('DOMContentLoaded', () => {
+    const faqItems = document.querySelectorAll(".faq-item");
 
-function openOrder() {
-    const p = calculate();
-    document.getElementById('finalPrice').innerText = p;
-    document.getElementById('orderModal').classList.add('active');
-}
+    faqItems.forEach(item => {
+        const question = item.querySelector(".faq-q");
+        const answer = item.querySelector(".faq-a");
 
-function closeOrder() {
-    document.getElementById('orderModal').classList.remove('active');
-}
+        if (!question || !answer) return;
 
-// FAQ JS 
-const faqItems = document.querySelectorAll(".faq-item");
+        // Reset on load
+        answer.style.maxHeight = null;
 
-faqItems.forEach(item => {
-    const question = item.querySelector(".faq-q");
-    const answer = item.querySelector(".faq-a");
+        question.addEventListener("click", (e) => {
+            e.stopPropagation();
 
-    // Reset on load
-    answer.style.maxHeight = null;
+            // Close all other FAQs
+            faqItems.forEach(other => {
+                if (other !== item) {
+                    other.classList.remove("active");
+                    const otherAnswer = other.querySelector(".faq-a");
+                    if (otherAnswer) {
+                        otherAnswer.style.maxHeight = null;
+                    }
+                }
+            });
 
-    question.addEventListener("click", (e) => {
-        e.stopPropagation(); // VERY IMPORTANT
+            // Toggle current
+            const isOpen = item.classList.contains("active");
+            item.classList.toggle("active");
 
-        // Close all other FAQs
-        faqItems.forEach(other => {
-            if (other !== item) {
-                other.classList.remove("active");
-                other.querySelector(".faq-a").style.maxHeight = null;
+            if (!isOpen) {
+                answer.style.maxHeight = answer.scrollHeight + "px";
+            } else {
+                answer.style.maxHeight = null;
             }
         });
-
-        // Toggle current
-        const isOpen = item.classList.contains("active");
-
-        item.classList.toggle("active");
-
-        if (!isOpen) {
-            answer.style.maxHeight = answer.scrollHeight + "px";
-        } else {
-            answer.style.maxHeight = null;
-        }
     });
 });
 
+/* =========================
+   NOTE: openOrder() and closeOrder() functions
+   are now in main.js with auth protection
+========================= */

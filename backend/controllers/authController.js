@@ -2,6 +2,7 @@ const User = require('../models/User');
 const generateToken = require('../utils/generateToken');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
+const crypto = require('crypto');
 
 // Register
 exports.register = async (req, res) => {
@@ -45,9 +46,6 @@ exports.register = async (req, res) => {
         `
       });
 
-      // COOKIE SET MAT KARO REGISTER PE (ye line delete kar di)
-      // Cookie sirf login pe set hoga
-
       res.status(201).json({
         _id: user._id,
         name: user.name,
@@ -85,7 +83,6 @@ exports.login = async (req, res) => {
 
     const token = generateToken(user._id);
 
-    // Ab cookie set kar do (sirf login pe)
     res.cookie('token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
@@ -107,4 +104,100 @@ exports.login = async (req, res) => {
 // Get Profile (protected)
 exports.getProfile = async (req, res) => {
   res.json(req.user);
+};
+
+// Forgot Password
+exports.forgotPassword = async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ message: 'Please provide your email' });
+  }
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ message: 'No account found with this email' });
+    }
+
+    // Generate reset token
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    const hashedToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+
+    user.resetPasswordToken = hashedToken;
+    user.resetPasswordExpire = Date.now() + 30 * 60 * 1000; // 30 minutes
+    await user.save();
+
+    // Reset link
+    const resetLink = `http://localhost:5000/reset-password.html?token=${resetToken}`;
+
+    // Send email
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+      }
+    });
+
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: 'Password Reset Request - MyApp',
+      html: `
+        <h2>Password Reset Request</h2>
+        <p>Hi ${user.name},</p>
+        <p>You requested to reset your password. Click the button below to proceed:</p>
+        <p><a href="${resetLink}" style="background:#764ba2;color:white;padding:10px 20px;text-decoration:none;border-radius:5px;">Reset Password</a></p>
+        <p>Or copy this link: ${resetLink}</p>
+        <p><strong>This link expires in 30 minutes.</strong></p>
+        <p>If you didn't request this, please ignore this email.</p>
+        <hr>
+        <small>MyApp Team</small>
+      `
+    });
+
+    res.json({ message: 'Password reset link sent to your email. Please check your inbox (and spam folder).' });
+  } catch (err) {
+    console.error('Forgot password error:', err);
+    res.status(500).json({ message: 'Error sending reset email. Please try again.' });
+  }
+};
+
+// Reset Password
+exports.resetPassword = async (req, res) => {
+  const { token, newPassword } = req.body;
+
+  if (!token || !newPassword) {
+    return res.status(400).json({ message: 'Token and new password are required' });
+  }
+
+  if (newPassword.length < 6) {
+    return res.status(400).json({ message: 'Password must be at least 6 characters' });
+  }
+
+  try {
+    const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+
+    const user = await User.findOne({
+      resetPasswordToken: hashedToken,
+      resetPasswordExpire: { $gt: Date.now() }
+    });
+
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid or expired reset token' });
+    }
+
+    // Update password
+    user.password = newPassword;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+    await user.save();
+
+    res.json({ message: 'Password reset successful! You can now login with your new password.' });
+  } catch (err) {
+    console.error('Reset password error:', err);
+    res.status(500).json({ message: 'Error resetting password. Please try again.' });
+  }
 };

@@ -1,179 +1,294 @@
+/* =========================
+   GLOBAL AUTH STATE
+========================= */
+let currentUser = null;
+let isLoggedIn = false;
+
+/* =========================
+   CHECK AUTH ON PAGE LOAD
+========================= */
 document.addEventListener('DOMContentLoaded', async () => {
-  const authSection = document.getElementById('authSection');
-  const personalSection = document.getElementById('personalSection');
-
-  // Premium section ke liye div add karo agar nahi hai (index.html mein daalna bhool gaye to)
-  if (!document.getElementById('premiumSection')) {
-    const premiumDiv = document.createElement('div');
-    premiumDiv.id = 'premiumSection';
-    premiumDiv.style.marginTop = '50px';
-    personalSection.before(premiumDiv);
-  }
-  const premiumSection = document.getElementById('premiumSection');
-
-  try {
-    const res = await fetch('/api/auth/profile', {
-      credentials: 'include'
-    });
-
-    if (res.ok) {
-      const userData = await res.json();
-      const firstLetter = userData.name.charAt(0).toUpperCase();
-
-      authSection.innerHTML = `
-        <div class="profile-circle" id="profileCircle">${firstLetter}</div>
-        <div class="profile-dropdown" id="profileDropdown">
-          <p>Hello, ${userData.name}!</p>
-          <button class="logout-btn" onclick="logout()">Logout</button>
-        </div>
-      `;
-
-      personalSection.style.display = 'block';
-      loadNotes();
-
-      // Premium check
-      if (userData.isPremium) {
-        premiumSection.innerHTML = '<h2 style="color:gold; text-align:center;">⭐ You are a Premium Member! Enjoy all features ⭐</h2>';
-      } else {
-        premiumSection.innerHTML = `
-          <div style="text-align:center; padding:40px; background:rgba(255,255,255,0.1); border-radius:20px;">
-            <h2>Unlock Premium Features</h2>
-            <p>Get unlimited notes, dark mode, and more!</p>
-            <p style="font-size:24px; margin:20px 0;">One-time payment: <strong>₹499</strong></p>
-            <button class="submit-btn" style="padding:15px 40px; font-size:18px;" onclick="startPayment()">Go Premium Now</button>
-            <div id="paymentMessage" style="margin-top:20px;"></div>
-          </div>
-        `;
-      }
-
-      document.getElementById('profileCircle').addEventListener('click', () => {
-        document.getElementById('profileDropdown').classList.toggle('show');
-      });
-
-      document.getElementById('saveBtn').addEventListener('click', saveNote);
-    } else {
-      authSection.innerHTML = `<button class="login-btn" onclick="window.location.href='/login.html'">Login / Register</button>`;
-      premiumSection.style.display = 'none';
-    }
-  } catch (err) {
-    authSection.innerHTML = `<button class="login-btn" onclick="window.location.href='/login.html'">Login / Register</button>`;
-    premiumSection.style.display = 'none';
-  }
+    await checkAuth();
 });
 
-async function logout() {
-  try {
-    await fetch('/api/auth/logout', {
-      method: 'POST',
-      credentials: 'include'
-    });
-  } catch (err) {}
-  location.reload();
-}
-
-async function startPayment() {
-  const paymentMessage = document.getElementById('paymentMessage');
-  paymentMessage.innerHTML = '<p style="color:yellow;">Processing...</p>';
-
-  try {
-    // Create order on backend
-    const orderRes = await fetch('/api/payment/create-order', {
-      method: 'POST',
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ amount: 49900 }) // ₹499 in paise
-    });
-
-    if (!orderRes.ok) {
-      paymentMessage.innerHTML = '<p style="color:red;">Error creating order</p>';
-      return;
-    }
-
-    const order = await orderRes.json();
-
-    const options = {
-      key: process.env.RAZORPAY_KEY_ID || 'rzp_test_YourKeyIDHere', // Test key daalo yahan (dashboard se)
-      amount: order.amount,
-      currency: 'INR',
-      order_id: order.id,
-      name: 'My Premium App',
-      description: 'Premium Membership - One Time',
-      image: 'https://yourlogo.com/logo.png', // Optional
-      handler: async function (response) {
-        // Verify payment on backend
-        const verifyRes = await fetch('/api/payment/verify-payment', {
-          method: 'POST',
-          credentials: 'include',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            razorpay_payment_id: response.razorpay_payment_id,
-            razorpay_order_id: response.razorpay_order_id,
-            razorpay_signature: response.razorpay_signature
-          })
+/* =========================
+   CHECK IF USER IS LOGGED IN
+========================= */
+async function checkAuth() {
+    try {
+        const res = await fetch('/api/auth/profile', {
+            credentials: 'include'
         });
 
-        const verifyData = await verifyRes.json();
-
-        if (verifyRes.ok) {
-          paymentMessage.innerHTML = `<p style="color:green;">${verifyData.message}</p>`;
-          setTimeout(() => location.reload(), 2000);
+        if (res.ok) {
+            currentUser = await res.json();
+            isLoggedIn = true;
+            renderAuthSection();
         } else {
-          paymentMessage.innerHTML = '<p style="color:red;">Payment failed or verification error</p>';
+            isLoggedIn = false;
+            renderAuthSection();
         }
-      },
-      prefill: {
-        name: 'User Name',
-        email: 'user@example.com'
-      },
-      theme: {
-        color: '#764ba2'
-      }
-    };
-
-    const rzp = new Razorpay(options);
-    rzp.on('payment.failed', function (response) {
-      paymentMessage.innerHTML = `<p style="color:red;">Payment failed: ${response.error.description}</p>`;
-    });
-    rzp.open();
-  } catch (err) {
-    paymentMessage.innerHTML = '<p style="color:red;">Network error</p>';
-  }
+    } catch (err) {
+        console.error('Auth check error:', err);
+        isLoggedIn = false;
+        renderAuthSection();
+    }
 }
 
-async function saveNote() {
-  const note = document.getElementById('noteInput').value.trim();
-  if (!note) return;
+/* =========================
+   RENDER AUTH SECTION (DESKTOP)
+========================= */
+function renderAuthSection() {
+    const authSection = document.getElementById('authSection');
+    const mobileAuthSection = document.getElementById('mobileAuthSection');
 
-  try {
-    const res = await fetch('/api/todos', {
-      method: 'POST',
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text: note })
-    });
+    if (isLoggedIn && currentUser) {
+        const firstLetter = currentUser.name.charAt(0).toUpperCase();
 
-    if (res.ok) {
-      document.getElementById('noteInput').value = '';
-      loadNotes();
+        // Desktop
+        authSection.innerHTML = `
+            <div class="profile-wrapper">
+                <div class="profile-circle" id="profileCircle">${firstLetter}</div>
+                <div class="profile-dropdown" id="profileDropdown">
+                    <div class="profile-info">
+                        <p class="profile-name">${currentUser.name}</p>
+                        <p class="profile-email">${currentUser.email}</p>
+                    </div>
+                    <hr style="border:none;border-top:1px solid rgba(255,255,255,0.1);margin:10px 0;">
+                    <button class="dropdown-btn" onclick="handleLogout()">
+                        <i class="fa-solid fa-right-from-bracket"></i> Logout
+                    </button>
+                </div>
+            </div>
+        `;
+
+        // Mobile
+        mobileAuthSection.innerHTML = `
+            <div style="padding:15px;border-top:1px solid rgba(255,255,255,0.1);">
+                <p style="color:#fff;margin-bottom:10px;">Hello, ${currentUser.name}!</p>
+                <button class="login-btn show" onclick="handleLogout()" style="width:100%;">
+                    Logout
+                </button>
+            </div>
+        `;
+
+        // Add click event for profile dropdown
+        const profileCircle = document.getElementById('profileCircle');
+        if (profileCircle) {
+            profileCircle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                document.getElementById('profileDropdown').classList.toggle('show');
+            });
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            const dropdown = document.getElementById('profileDropdown');
+            const circle = document.getElementById('profileCircle');
+            if (dropdown && !dropdown.contains(e.target) && circle && !circle.contains(e.target)) {
+                dropdown.classList.remove('show');
+            }
+        });
+
     } else {
-      alert('Error saving note');
+        // Desktop
+        authSection.innerHTML = `<a href="login.html" class="login-btn">Log In</a>`;
+        
+        // Mobile
+        mobileAuthSection.innerHTML = `<a href="login.html" class="login-btn show">Log In</a>`;
     }
-  } catch (err) {
-    alert('Network error');
-  }
 }
 
-async function loadNotes() {
-  try {
-    const res = await fetch('/api/todos', { credentials: 'include' });
-    if (res.ok) {
-      const todos = await res.json();
-      const list = document.getElementById('notesList');
-      list.innerHTML = todos.map(todo => `
-        <div class="note-item">${todo.text}</div>
-      `).join('');
+/* =========================
+   LOGOUT WITH CONFIRMATION
+========================= */
+async function handleLogout() {
+    const confirmed = confirm('Are you sure you want to logout?');
+    
+    if (!confirmed) return;
+
+    try {
+        const res = await fetch('/api/auth/logout', {
+            method: 'POST',
+            credentials: 'include'
+        });
+
+        if (res.ok) {
+            currentUser = null;
+            isLoggedIn = false;
+            renderAuthSection();
+            
+            // Show success message
+            showToast('Logged out successfully!', 'success');
+            
+            // Reload after short delay
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+        } else {
+            showToast('Logout failed. Please try again.', 'error');
+        }
+    } catch (err) {
+        console.error('Logout error:', err);
+        showToast('Network error. Please try again.', 'error');
     }
-  } catch (err) {
-    console.error('Error loading notes');
-  }
+}
+
+/* =========================
+   ORDER MODAL PROTECTION
+========================= */
+function openOrder() {
+    if (!isLoggedIn) {
+        showToast('Please login or register to place an order', 'error');
+        setTimeout(() => {
+            window.location.href = '/login.html';
+        }, 1500);
+        return;
+    }
+
+    const price = calculate(); // This function is in indexjs.js
+    document.getElementById('finalPrice').innerText = price;
+    document.getElementById('orderModal').classList.add('active');
+
+    // Pre-fill user data
+    if (currentUser) {
+        document.getElementById('orderName').value = currentUser.name;
+        document.getElementById('orderEmail').value = currentUser.email;
+    }
+}
+
+function closeOrder() {
+    document.getElementById('orderModal').classList.remove('active');
+    
+    // Clear form
+    document.getElementById('orderName').value = '';
+    document.getElementById('orderEmail').value = '';
+    document.getElementById('orderDetails').value = '';
+    
+    const messageEl = document.getElementById('orderMessage');
+    if (messageEl) {
+        messageEl.innerHTML = '';
+    }
+}
+
+/* =========================
+   SUBMIT ORDER
+========================= */
+document.addEventListener('DOMContentLoaded', () => {
+    const submitBtn = document.getElementById('submitOrderBtn');
+    if (submitBtn) {
+        submitBtn.addEventListener('click', submitOrder);
+    }
+});
+
+async function submitOrder() {
+    if (!isLoggedIn) {
+        showToast('Please login first', 'error');
+        closeOrder();
+        setTimeout(() => {
+            window.location.href = '/login.html';
+        }, 1000);
+        return;
+    }
+
+    const name = document.getElementById('orderName').value.trim();
+    const email = document.getElementById('orderEmail').value.trim();
+    const details = document.getElementById('orderDetails').value.trim();
+    const price = document.getElementById('finalPrice').innerText;
+
+    const messageEl = document.getElementById('orderMessage');
+
+    // Validation
+    if (!name || !email || !details) {
+        messageEl.innerHTML = '<p style="color:#f87171;">Please fill in all fields</p>';
+        return;
+    }
+
+    const submitBtn = document.getElementById('submitOrderBtn');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting...';
+
+    try {
+        // For now, just show success (you can add backend endpoint later)
+        setTimeout(() => {
+            messageEl.innerHTML = '<p style="color:#4ade80;">Order submitted successfully! We will contact you soon.</p>';
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Submit Order';
+
+            // Clear form after 2 seconds
+            setTimeout(() => {
+                closeOrder();
+                showToast('Order placed successfully!', 'success');
+            }, 2000);
+        }, 1000);
+
+        // TODO: Add backend endpoint for orders
+        /*
+        const orderData = {
+            name,
+            email,
+            details,
+            estimatedPrice: price,
+            userId: currentUser._id || currentUser.id
+        };
+
+        const res = await fetch('/api/orders', {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(orderData)
+        });
+
+        const data = await res.json();
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit Order';
+
+        if (res.ok) {
+            messageEl.innerHTML = '<p style="color:#4ade80;">Order submitted successfully!</p>';
+            setTimeout(() => {
+                closeOrder();
+                showToast('Order placed successfully!', 'success');
+            }, 2000);
+        } else {
+            messageEl.innerHTML = `<p style="color:#f87171;">${data.message || 'Order failed'}</p>`;
+        }
+        */
+
+    } catch (err) {
+        console.error('Order submission error:', err);
+        messageEl.innerHTML = '<p style="color:#f87171;">Network error. Please try again.</p>';
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit Order';
+    }
+}
+
+/* =========================
+   TOAST NOTIFICATION
+========================= */
+function showToast(message, type = 'info') {
+    // Remove existing toast
+    const existingToast = document.getElementById('customToast');
+    if (existingToast) {
+        existingToast.remove();
+    }
+
+    const toast = document.createElement('div');
+    toast.id = 'customToast';
+    toast.className = `custom-toast ${type}`;
+    toast.textContent = message;
+
+    document.body.appendChild(toast);
+
+    // Show toast
+    setTimeout(() => {
+        toast.classList.add('show');
+    }, 100);
+
+    // Hide and remove toast
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => {
+            toast.remove();
+        }, 300);
+    }, 3000);
 }
