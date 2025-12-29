@@ -2,18 +2,21 @@
 │   ├── controllers/
 │   │   ├── authController.js
 │   │   ├── paymentController.js
+│   │   ├── orderController.js
 │   │   └── todoController.js
 │   ├── node_modules/ # files not shown here
 │   ├── middleware/
 │   │   └── auth.js
 │   ├── models/
 │   │   ├── Todo.js
+│   │   ├── Order.js
 │   │   └── User.js
 │   ├── package-lock.json
 │   ├── package.json
 │   ├── routes/
 │   │   ├── auth.js
 │   │   ├── payment.js
+│   │   ├── orders.js
 │   │   └── todos.js
 │   ├── server.js
 │   └── utils/
@@ -22,6 +25,7 @@
     ├── assets/
     ├── css/
     │   ├── indexstyle.css
+    │   ├── loginstyle.css
     │   └── style.css
     ├── index.html
     ├── js/
@@ -31,5 +35,5 @@
     │   └── main.js
     ├── login.html
     ├── package.json
-    ├── register.html
+    ├── verify-email.html
     └── reset-password.html
