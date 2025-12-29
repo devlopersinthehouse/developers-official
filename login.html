@@ -4,513 +4,249 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
-    <link rel="stylesheet" href="css/auth.css">
+    <title>Login / Register</title>
+    <link rel="stylesheet" href="loginstyle.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-    <style>
-        /* =========================
-   RESET & BASE
-========================= */
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-        }
-
-        body {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #e5e7eb;
-            overflow: hidden;
-        }
-
-        /* =========================
-   CONTAINER
-========================= */
-
-        .container {
-            width: 100%;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        /* =========================
-   LOGIN CARD
-========================= */
-
-        .login-card {
-            width: 100%;
-            max-width: 420px;
-            background: rgba(10, 21, 32, 0.75);
-            backdrop-filter: blur(14px);
-            border-radius: 18px;
-            padding: 34px 30px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow:
-                0 25px 50px rgba(0, 0, 0, 0.45),
-                inset 0 0 0 1px rgba(255, 255, 255, 0.03);
-            animation: cardFadeUp 0.9s ease forwards;
-        }
-
-        /* =========================
-   HEADINGS
-========================= */
-
-        .login-card h1 {
-            font-size: 28px;
-            font-weight: 700;
-            text-align: center;
-            margin-bottom: 6px;
-            background: linear-gradient(90deg, #ffffff, #9ae6b4);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .subheading {
-            text-align: center;
-            font-size: 14px;
-            color: #9ca3af;
-            margin-bottom: 26px;
-        }
-
-        /* =========================
-   INPUTS
-========================= */
-
-        .login-card input[type="email"],
-        .login-card input[type="password"] {
-            width: 100%;
-            padding: 14px 16px;
-            margin-bottom: 16px;
-            border-radius: 12px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            color: #f9fafb;
-            font-size: 14px;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-
-        .login-card input::placeholder {
-            color: #9ca3af;
-        }
-
-        .login-card input:focus {
-            border-color: rgba(74, 222, 128, 0.6);
-            box-shadow:
-                0 0 0 2px rgba(74, 222, 128, 0.18),
-                0 0 18px rgba(74, 222, 128, 0.25);
-        }
-
-        /* =========================
-   OPTIONS ROW
-========================= */
-
-        .options {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 22px;
-            font-size: 13px;
-            color: #d1d5db;
-        }
-
-        .options label {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            cursor: pointer;
-        }
-
-        .options input[type="checkbox"] {
-            accent-color: #4ade80;
-            cursor: pointer;
-        }
-
-        .options a {
-            color: #7dd3fc;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        .options a:hover {
-            color: #38bdf8;
-        }
-
-        /* =========================
-   BUTTON
-========================= */
-
-
-        #loginBtn {
-            width: 100%;
-            padding: 14px;
-            border-radius: 14px;
-            border: none;
-            cursor: pointer;
-            font-size: 15px;
-            font-weight: 600;
-            color: #04130a;
-            background: linear-gradient(135deg, #4ade80, #20db65);
-            box-shadow:
-                0 12px 30px rgba(41, 141, 77, 0.35),
-                inset 0 0 0 1px rgba(255, 255, 255, 0.25);
-            transition: transform 0.25s ease, box-shadow 0.25s ease;
-        }
-
-        #loginBtn:hover {
-            transform: translateY(-2px);
-            box-shadow:
-                0 18px 40px rgba(34, 197, 94, 0.45),
-                inset 0 0 0 1px rgba(255, 255, 255, 0.3);
-        }
-
-        #loginBtn:active {
-            transform: translateY(0);
-        }
-
-        /* =========================
-   MESSAGE TEXT
-========================= */
-
-        #loginMsg {
-            margin-top: 14px;
-            font-size: 13px;
-            text-align: center;
-            color: #f87171;
-        }
-
-        /* =========================
-   ANIMATION
-========================= */
-
-        @keyframes cardFadeUp {
-            from {
-                opacity: 0;
-                transform: translateY(25px) scale(0.96);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        /* =========================
-   RESPONSIVE
-========================= */
-
-        @media (max-width: 480px) {
-            .login-card {
-                padding: 28px 22px;
-                border-radius: 16px;
-            }
-
-            .login-card h1 {
-                font-size: 24px;
-            }
-        }
-
-        /* ================= GRID BACKGROUND ================= */
-
-        .grid-bg {
-            position: fixed;
-            inset: 0;
-            z-index: 0;
-            pointer-events: none;
-            background-color: #050505;
-
-            /* Horizontal + Vertical grid */
-            background-image:
-                linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-
-            background-size: 120px 120px;
-        }
-
-        .grid-bg::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at center,
-                    rgba(0, 0, 0, 0) 0%,
-                    rgba(0, 0, 0, 0.6) 65%,
-                    rgba(0, 0, 0, 0.9) 100%);
-        }
-
-        /* ================= FLOATING ICON BACKGROUND ================= */
-
-        .floating-dots {
-            position: fixed;
-            inset: 0;
-            z-index: 0;
-            pointer-events: none;
-            overflow: hidden;
-        }
-
-        /* Floating icon */
-        .float-icon {
-            position: absolute;
-            font-size: 90px;
-            opacity: 0;
-            animation: floatUp linear forwards;
-            transition:
-                transform 0.3s ease,
-                text-shadow 0.3s ease,
-                opacity 0.3s ease;
-        }
-
-        /* Base animation (NO POPPING) */
-        @keyframes floatUp {
-            0% {
-                transform: translateY(110vh) scale(0.8);
-                opacity: 0;
-            }
-
-            10% {
-                opacity: 0.35;
-            }
-
-            90% {
-                opacity: 0.35;
-            }
-
-            100% {
-                transform: translateY(-15vh) scale(1.2);
-                opacity: 0;
-            }
-        }
-
-        /* Mouse reactive glow */
-        .float-icon.active {
-            opacity: 1 !important;
-            transform: scale(1.6);
-        }
-
-        /* ===== LANGUAGE COLORS ===== */
-        .html {
-            color: #ff6d00;
-        }
-
-        .css {
-            color: #00b0ff;
-        }
-
-        .js {
-            color: #ffd600;
-        }
-
-        .react {
-            color: #00e5ff;
-        }
-
-        .node {
-            color: #69f0ae;
-        }
-
-        .python {
-            color: #82b1ff;
-        }
-
-        /* Glow applied ONLY on hover proximity */
-        .float-icon.active.html {
-            text-shadow: 0 0 18px #ff6d00;
-        }
-
-        .float-icon.active.css {
-            text-shadow: 0 0 18px #00b0ff;
-        }
-
-        .float-icon.active.js {
-            text-shadow: 0 0 18px #ffd600;
-        }
-
-        .float-icon.active.react {
-            text-shadow: 0 0 18px #00e5ff;
-        }
-
-        .float-icon.active.node {
-            text-shadow: 0 0 18px #69f0ae;
-        }
-
-        .float-icon.active.python {
-            text-shadow: 0 0 18px #82b1ff;
-        }
-
-
-        /* ===============================
-   LOGIN CARD FIX
-================================ */
-
-        .container {
-            position: relative;
-            z-index: 2;
-        }
-
-        input[type="password"],
-        input[type="email"] {
-            width: 100%;
-            padding: 14px 48px 14px 14px;
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 12px;
-            color: #e5f9ee;
-            font-size: 15px;
-            outline: none;
-        }
-
-        input::placeholder {
-            color: #9ca3af;
-        }
-
-        input:focus {
-            border-color: #4ade80;
-            box-shadow: 0 0 0 2px rgba(74, 222, 128, 0.15);
-        }
-
-
-        /* =========================
-   LOGIN LOADING STATE
-========================= */
-
-        #loginBtn.loading {
-            pointer-events: none;
-            color: transparent;
-            position: relative;
-        }
-
-        #loginBtn.loading::after {
-            content: "";
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255, 255, 255, 0.4);
-            border-top-color: #ffffff;
-            border-radius: 50%;
-            position: absolute;
-            inset: 0;
-            margin: auto;
-            animation: spin 0.9s linear infinite;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        /* SHAKE ANIMATION */
-        @keyframes shake {
-            0% {
-                transform: translateX(0);
-            }
-
-            20% {
-                transform: translateX(-6px);
-            }
-
-            40% {
-                transform: translateX(6px);
-            }
-
-            60% {
-                transform: translateX(-4px);
-            }
-
-            80% {
-                transform: translateX(4px);
-            }
-
-            100% {
-                transform: translateX(0);
-            }
-        }
-
-        /* Applied when login fails */
-        .login-card.shake {
-            animation: shake 0.45s ease;
-        }
-
-        /* Red glow on password error */
-        input.error {
-            border-color: #ef4444 !important;
-            box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.25);
-        }
-    </style>
 </head>
 
-<body>
-    <div class="grid-bg"></div>
-    <div class="floating-dots"></div>
+<body class="auth-page">
+    <div class="auth-card">
+        <h2>My App</h2>
 
-    <div class="container">
-        <div class="login-card">
-            <h1>Welcome Back</h1>
-            <p class="subheading">Please login to your account</p>
-            <form id="loginForm">
-                <input type="email" id="email" placeholder="Email" required>
-                <input type="password" id="password" placeholder="Password" required>
+        <div class="tabs">
+            <div class="tab active" data-form="login">Login</div>
+            <div class="tab" data-form="register">Register</div>
+        </div>
 
-                <div class="options">
-                    <label><input type="checkbox" id="rememberMe"> Remember me</label>
-                    <a href="#" id="forgotPassword">Forgot password?</a>
-                </div>
+        <!-- Login Form -->
+        <div id="loginForm">
+            <div class="form-group">
+                <input type="email" id="loginEmail" placeholder="Email" required>
+            </div>
+            <div class="form-group password-group">
+                <input type="password" id="loginPassword" placeholder="Password" required>
+                <span class="show-pass" data-target="loginPassword">👁</span>
+            </div>
+            <div class="link-text">
+                <a id="forgotLink">Forgot Password?</a>
+            </div>
+            <button class="submit-btn" id="loginBtn">Login</button>
+            <div class="loader" id="loginLoader"></div>
+            <div id="loginMessage"></div>
+            <div class="link-text">
+                Don't have an account? <a id="toRegister">Register</a>
+            </div>
+        </div>
 
-                <button type="submit" id="loginBtn">Login</button>
-                <p id="loginMsg"></p>
-            </form>
+        <!-- Register Form -->
+        <div id="registerForm" style="display: none;">
+            <div class="form-group">
+                <input type="text" id="regName" placeholder="Full Name" required>
+            </div>
+            <div class="form-group">
+                <input type="email" id="regEmail" placeholder="Email" required>
+            </div>
+            <div class="form-group password-group">
+                <input type="password" id="regPassword" placeholder="Password" required>
+                <span class="show-pass" data-target="regPassword">👁</span>
+            </div>
+            <button class="submit-btn" id="registerBtn">Create Account</button>
+            <div class="loader" id="regLoader"></div>
+            <div id="registerMessage"></div>
+            <div class="link-text">
+                Already have an account? <a id="toLogin">Login</a>
+            </div>
+        </div>
+
+        <!-- Forgot Form -->
+        <div id="forgotForm" style="display: none;">
+            <div class="form-group">
+                <input type="email" id="forgotEmail" placeholder="Enter your email" required>
+            </div>
+            <button class="submit-btn" id="forgotBtn">Send Reset Link</button>
+            <div class="loader" id="forgotLoader"></div>
+            <div id="forgotMessage"></div>
+            <div class="link-text">
+                <a id="backToLoginLink">Back to Login</a>
+            </div>
         </div>
     </div>
 
     <script src="js/auth.js"></script>
     <script>
-        const container = document.querySelector(".floating-dots");
+        /* =========================
+   TAB SWITCHING
+========================= */
 
-        const ICONS = [
-            { cls: "html", icon: "fa-html5" },
-            { cls: "css", icon: "fa-css3-alt" },
-            { cls: "js", icon: "fa-js" },
-            { cls: "react", icon: "fa-react" },
-            { cls: "node", icon: "fa-node-js" },
-            { cls: "python", icon: "fa-python" }
-        ];
+        const tabs = document.querySelectorAll(".tab");
+        const loginForm = document.getElementById("loginForm");
+        const registerForm = document.getElementById("registerForm");
+        const forgotForm = document.getElementById("forgotForm");
 
-        const ICON_LIFETIME = 26000;
-        const SPAWN_INTERVAL = 900;
+        tabs.forEach(tab => {
+            tab.addEventListener("click", () => {
+                tabs.forEach(t => t.classList.remove("active"));
+                tab.classList.add("active");
 
-        function spawnIcon() {
-            const data = ICONS[Math.floor(Math.random() * ICONS.length)];
+                loginForm.style.display = tab.dataset.form === "login" ? "block" : "none";
+                registerForm.style.display = tab.dataset.form === "register" ? "block" : "none";
+                forgotForm.style.display = "none";
+            });
+        });
 
-            const el = document.createElement("i");
-            el.className = `fa-brands ${data.icon} float-icon ${data.cls}`;
+        /* =========================
+           LINKS
+        ========================= */
 
-            el.style.left = Math.random() * 100 + "%";
-            el.style.animationDuration = 18 + Math.random() * 10 + "s";
+        document.getElementById("toRegister").onclick = () => {
+            tabs[1].click();
+        };
 
-            container.appendChild(el);
+        document.getElementById("toLogin").onclick = () => {
+            tabs[0].click();
+        };
 
-            setTimeout(() => el.remove(), ICON_LIFETIME);
+        document.getElementById("forgotLink").onclick = () => {
+            loginForm.style.display = "none";
+            registerForm.style.display = "none";
+            forgotForm.style.display = "block";
+        };
+
+        document.getElementById("backToLoginLink").onclick = () => {
+            tabs[0].click();
+        };
+
+        /* =========================
+           PASSWORD SHOW / HIDE
+        ========================= */
+
+        document.querySelectorAll(".show-pass").forEach(btn => {
+            btn.addEventListener("click", () => {
+                const input = document.getElementById(btn.dataset.target);
+                input.type = input.type === "password" ? "text" : "password";
+            });
+        });
+
+        /* =========================
+           LOGIN LOADING + SHAKE
+        ========================= */
+
+        const card = document.querySelector(".auth-card");
+
+        function fakeSubmit(btn, loader, msg, success = false) {
+            loader.style.display = "block";
+            btn.disabled = true;
+
+            setTimeout(() => {
+                loader.style.display = "none";
+                btn.disabled = false;
+
+                if (!success) {
+                    msg.textContent = "Invalid credentials";
+                    msg.style.color = "#f87171";
+                    card.classList.add("shake");
+                    setTimeout(() => card.classList.remove("shake"), 500);
+                } else {
+                    msg.textContent = "Success!";
+                    msg.style.color = "#4ade80";
+                }
+            }, 1500);
         }
 
-        setInterval(spawnIcon, SPAWN_INTERVAL);
+        document.getElementById("loginBtn").onclick = () => {
+            fakeSubmit(
+                document.getElementById("loginBtn"),
+                document.getElementById("loginLoader"),
+                document.getElementById("loginMessage")
+            );
+        };
 
-        /* Mouse glow interaction */
-        document.addEventListener("mousemove", e => {
-            document.querySelectorAll(".float-icon").forEach(icon => {
-                const r = icon.getBoundingClientRect();
-                const cx = r.left + r.width / 2;
-                const cy = r.top + r.height / 2;
+        document.getElementById("registerBtn").onclick = () => {
+            fakeSubmit(
+                document.getElementById("registerBtn"),
+                document.getElementById("regLoader"),
+                document.getElementById("registerMessage"),
+                true
+            );
+        };
+
+        document.getElementById("forgotBtn").onclick = () => {
+            fakeSubmit(
+                document.getElementById("forgotBtn"),
+                document.getElementById("forgotLoader"),
+                document.getElementById("forgotMessage"),
+                true
+            );
+        };
+
+        /* =========================
+        FLOATING TECH ICONS
+     ========================= */
+
+        const techIcons = [
+            { icon: "fa-html5", glow: "glow-html" },
+            { icon: "fa-css3-alt", glow: "glow-css" },
+            { icon: "fa-js", glow: "glow-js" },
+            { icon: "fa-react", glow: "glow-react" },
+            { icon: "fa-node-js", glow: "glow-node" },
+            { icon: "fa-python", glow: "glow-python" },
+            { icon: "fa-github", glow: "glow-github" }
+        ];
+
+        const techLayer = document.createElement("div");
+        techLayer.className = "tech-bg";
+        document.body.prepend(techLayer);
+
+        const iconsOnScreen = [];
+
+        /* RESPONSIVE ICON COUNT */
+        function getIconCount() {
+            const w = window.innerWidth;
+
+            if (w >= 1440) return 28;
+            if (w >= 1200) return 22;
+            if (w >= 992) return 18;
+            if (w >= 768) return 14;
+            if (w >= 480) return 10;
+            return 7;
+        }
+
+        /* CREATE ICONS */
+        function createIcons() {
+            techLayer.innerHTML = "";
+            iconsOnScreen.length = 0;
+
+            const ICON_COUNT = getIconCount();
+
+            for (let i = 0; i < ICON_COUNT; i++) {
+                const data = techIcons[Math.floor(Math.random() * techIcons.length)];
+
+                const el = document.createElement("i");
+                el.className = `fa-brands ${data.icon} tech-icon ${data.glow}`;
+
+                el.style.left = Math.random() * 100 + "vw";
+                el.style.top = Math.random() * 100 + "vh";
+
+                const baseSpeed = window.innerWidth < 768 ? 32 : 22;
+                el.style.animationDuration = baseSpeed + Math.random() * 18 + "s";
+                el.style.animationDelay = Math.random() * -20 + "s";
+
+                techLayer.appendChild(el);
+                iconsOnScreen.push(el);
+            }
+        }
+
+        /* Mouse proximity glow */
+        document.addEventListener("mousemove", (e) => {
+            iconsOnScreen.forEach(icon => {
+                const rect = icon.getBoundingClientRect();
+                const cx = rect.left + rect.width / 2;
+                const cy = rect.top + rect.height / 2;
 
                 const dist = Math.hypot(e.clientX - cx, e.clientY - cy);
 
-                if (dist < 120) {
+                if (dist < 160) {
                     icon.classList.add("active");
                 } else {
                     icon.classList.remove("active");
@@ -518,60 +254,16 @@
             });
         });
 
+        /* INIT */
+        createIcons();
 
-
-        // LOGIN LOADING EFFECT
-        const loginForm = document.getElementById("loginForm");
-        const loginBtn = document.getElementById("loginBtn");
-
-        loginForm.addEventListener("submit", (e) => {
-            e.preventDefault();
-
-            loginBtn.classList.add("loading");
-
-            // simulate auth request
-            setTimeout(() => {
-                loginBtn.classList.remove("loading");
-            }, 2000);
+        /* Regenerate on resize (debounced) */
+        let resizeTimer;
+        window.addEventListener("resize", () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(createIcons, 300);
         });
 
-        // LOGIN ERROR EFFECTS
-        const loginCard = document.querySelector(".login-card");
-        const passwordInput = document.getElementById("password");
-        const loginMsg = document.getElementById("loginMsg");
-
-        loginForm.addEventListener("submit", (e) => {
-            e.preventDefault();
-
-            const password = passwordInput.value;
-
-            // TEMP check (replace with real auth later)
-            if (password !== "correctPassword") {
-                // Shake card
-                loginCard.classList.remove("shake");
-                void loginCard.offsetWidth; // reset animation
-                loginCard.classList.add("shake");
-
-                // Password error glow
-                passwordInput.classList.add("error");
-
-                // Message
-                loginMsg.textContent = "Incorrect password";
-                loginMsg.style.color = "#ef4444";
-
-                // Remove effects after animation
-                setTimeout(() => {
-                    loginCard.classList.remove("shake");
-                    passwordInput.classList.remove("error");
-                }, 600);
-
-                return;
-            }
-
-            // SUCCESS (example)
-            loginMsg.textContent = "Login successful";
-            loginMsg.style.color = "#4ade80";
-        });
 
     </script>
 </body>
