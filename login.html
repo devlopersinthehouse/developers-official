@@ -73,6 +73,20 @@
         </div>
     </div>
 
+    <!-- SUCCESS OVERLAY -->
+    <div id="successOverlay">
+        <div class="success-card">
+            <div class="check-wrap">
+                <svg viewBox="0 0 52 52">
+                    <circle cx="26" cy="26" r="25" />
+                    <path d="M14 27 l7 7 l16 -16" />
+                </svg>
+            </div>
+            <h3 id="successTitle">Success</h3>
+            <p id="successText">You are logged in</p>
+        </div>
+    </div>
+
     <script src="js/auth.js"></script>
     <script>
         /* =========================
@@ -263,6 +277,54 @@
             clearTimeout(resizeTimer);
             resizeTimer = setTimeout(createIcons, 300);
         });
+
+        // animated success overlay
+
+        document.getElementById("successOverlay").classList.remove("active");
+
+        function showSuccess(title, message) {
+            const overlay = document.getElementById("successOverlay");
+            document.getElementById("successTitle").textContent = title;
+            document.getElementById("successText").textContent = message;
+
+            overlay.classList.add("active");
+
+            // Auto-hide after 2.2s
+            setTimeout(() => {
+                overlay.classList.remove("active");
+            }, 2200);
+        }
+        // after login success
+        document.getElementById("loginBtn").addEventListener("click", (e) => {
+            e.preventDefault();
+
+            const email = loginEmail.value.trim();
+            const password = loginPassword.value.trim();
+
+            if (!email || !password) return;
+
+            // simulate successful login (replace with real API later)
+            setTimeout(() => {
+                showSuccess("Login Successful", "Welcome back!");
+            }, 600);
+        });
+
+
+        // after registration success
+        document.getElementById("registerBtn").addEventListener("click", (e) => {
+            e.preventDefault();
+
+            const name = regName.value.trim();
+            const email = regEmail.value.trim();
+            const pass = regPassword.value.trim();
+
+            if (!name || !email || !pass) return;
+
+            setTimeout(() => {
+                showSuccess("Account Created", "You can now login");
+            }, 600);
+        });
+
 
 
     </script>
