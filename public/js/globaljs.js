@@ -126,68 +126,65 @@ window.addEventListener("resize", resizeCanvas);
 /* Init */
 resizeCanvas();
 animate();
+function getIconCount() {
+    const w = window.innerWidth;
+    if (w >= 1440) return 28;
+    if (w >= 1200) return 22;
+    if (w >= 992) return 18;
+    if (w >= 768) return 14;
+    if (w >= 480) return 10;
+    return 7;
+}
 
-// background floating code symbols animation
+function createIcons() {
+    if (!techLayer) return;
+    
+    techLayer.innerHTML = '';
+    iconsOnScreen.length = 0;
 
-const symbols = [
-    "&lt;/&gt;", "{ }", "[ ]", "( )", "=>", "==", "!=", ";",
-    "$", "#", "@", "//", "/* */", "&&", "||", "::", "%"
-];
+    const ICON_COUNT = getIconCount();
 
-const SYMBOL_COUNT = 12;
-const SYMBOL_CHANGE_INTERVAL = 4000; // X seconds (4000 = 4s)
+    for (let i = 0; i < ICON_COUNT; i++) {
+        const data = techIcons[Math.floor(Math.random() * techIcons.length)];
 
-let symbolElements = [];
+        const el = document.createElement('i');
+        el.className = `fa-brands ${data.icon} tech-icon ${data.glow}`;
 
-function createRandomSymbols() {
-    // remove old
-    symbolElements.forEach(el => el.remove());
-    symbolElements = [];
+        el.style.left = Math.random() * 100 + 'vw';
+        el.style.top = Math.random() * 100 + 'vh';
 
-    for (let i = 0; i < SYMBOL_COUNT; i++) {
-        const el = document.createElement("div");
-        el.className = "code-bg dynamic";
+        const baseSpeed = window.innerWidth < 768 ? 32 : 22;
+        el.style.animationDuration = baseSpeed + Math.random() * 18 + 's';
+        el.style.animationDelay = Math.random() * -20 + 's';
 
-        el.innerHTML = symbols[Math.floor(Math.random() * symbols.length)];
-        el.style.top = Math.random() * 90 + "%";
-        el.style.left = Math.random() * 90 + "%";
-        el.style.fontSize = (60 + Math.random() * 80) + "px";
-        el.style.animationDuration = (18 + Math.random() * 20) + "s";
-
-        document.body.appendChild(el);
-        symbolElements.push(el);
+        techLayer.appendChild(el);
+        iconsOnScreen.push(el);
     }
 }
 
-// Change symbols every X seconds
-setInterval(() => {
-    symbolElements.forEach(el => {
-        el.innerHTML = symbols[Math.floor(Math.random() * symbols.length)];
-    });
-}, SYMBOL_CHANGE_INTERVAL);
-
-// Mouse glow interaction
-document.addEventListener("mousemove", (e) => {
-    symbolElements.forEach(el => {
-        const rect = el.getBoundingClientRect();
+/* Mouse proximity glow effect */
+document.addEventListener('mousemove', (e) => {
+    iconsOnScreen.forEach(icon => {
+        const rect = icon.getBoundingClientRect();
         const cx = rect.left + rect.width / 2;
         const cy = rect.top + rect.height / 2;
 
         const dist = Math.hypot(e.clientX - cx, e.clientY - cy);
 
-        if (dist < 180) {
-            el.classList.add("glow");
+        if (dist < 160) {
+            icon.classList.add('active');
         } else {
-            el.classList.remove("glow");
+            icon.classList.remove('active');
         }
     });
 });
 
-// Init
-createRandomSymbols();
+/* Initialize icons */
+createIcons();
 
-// Regenerate on resize
-window.addEventListener("resize", () => {
-    clearTimeout(window.__symbolResize);
-    window.__symbolResize = setTimeout(createRandomSymbols, 300);
+/* Regenerate on resize (debounced) */
+let resizeTimer;
+window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(createIcons, 300);
 });

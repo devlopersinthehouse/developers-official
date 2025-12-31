@@ -2,7 +2,16 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
-const { register, login, getProfile, forgotPassword, resetPassword } = require('../controllers/authController');
+const { 
+  register, 
+  login, 
+  getProfile, 
+  forgotPassword, 
+  resetPassword,
+  updateProfile,
+  changePassword,
+  deleteAccount
+} = require('../controllers/authController');
 const { protect } = require('../middleware/auth');
 
 const router = express.Router();
@@ -31,6 +40,15 @@ router.post('/forgot', forgotPassword);
 
 // Reset Password Route
 router.post('/reset', resetPassword);
+
+// NEW: Update Profile Route (protected)
+router.put('/update-profile', protect, updateProfile);
+
+// NEW: Change Password Route (protected)
+router.put('/change-password', protect, changePassword);
+
+// NEW: Delete Account Route (protected)
+router.delete('/delete-account', protect, deleteAccount);
 
 // Email Verification Route
 router.get('/verify-email', async (req, res) => {

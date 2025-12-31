@@ -12,8 +12,8 @@ exports.register = async (req, res) => {
     if (userExists) {
       return res.status(400).json({ message: 'User already exists' });
     }
-
-    const user = await User.create({ name, email, password });
+    const { name, email, password, phone } = req.body; // ← phone add
+    const user = await User.create({ name, email, password, phone });
 
     if (user) {
       // Verification Token (1 day expiry)
@@ -103,7 +103,23 @@ exports.login = async (req, res) => {
 
 // Get Profile (protected)
 exports.getProfile = async (req, res) => {
-  res.json(req.user);
+  try {
+    if (!req.user) {
+      return res.status(401).json({ message: 'Not authorized, please login again' });
+    }
+
+    res.json({
+      _id: req.user._id,
+      name: req.user.name,
+      email: req.user.email,
+      phone: req.user.phone || '',
+      isVerified: req.user.isVerified,
+      role: req.user.role || 'user'
+    });
+  } catch (err) {
+    console.error('Get profile error:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
 };
 
 // Forgot Password
@@ -199,5 +215,103 @@ exports.resetPassword = async (req, res) => {
   } catch (err) {
     console.error('Reset password error:', err);
     res.status(500).json({ message: 'Error resetting password. Please try again.' });
+  }
+};
+
+// NEW: Update Profile
+exports.updateProfile = async (req, res) => {
+  try {
+    const { name } = req.body;
+
+    if (!name || name.trim().length === 0) {
+      return res.status(400).json({ message: 'Name is required' });
+    }
+
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    user.name = name.trim();
+    await user.save();
+
+    res.json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      message: 'Profile updated successfully'
+    });
+  } catch (err) {
+    console.error('Update profile error:', err);
+    res.status(500).json({ message: 'Error updating profile' });
+  }
+};
+
+// NEW: Change Password
+exports.changePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ message: 'All fields are required' });
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({ message: 'New password must be at least 6 characters' });
+    }
+
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Verify current password
+    const isMatch = await user.comparePassword(currentPassword);
+    if (!isMatch) {
+      return res.status(401).json({ message: 'Current password is incorrect' });
+    }
+
+    // Update password
+    user.password = newPassword;
+    await user.save();
+
+    res.json({ message: 'Password changed successfully' });
+  } catch (err) {
+    console.error('Change password error:', err);
+    res.status(500).json({ message: 'Error changing password' });
+  }
+};
+
+// NEW: Delete Account
+exports.deleteAccount = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Delete all user's orders first (if Order model exists)
+    try {
+      const Order = require('../models/Order');
+      await Order.deleteMany({ user: req.user._id });
+    } catch (err) {
+      // Order model doesn't exist yet, skip
+      console.log('Order model not found, skipping order deletion');
+    }
+
+    // Delete user
+    await User.findByIdAndDelete(req.user._id);
+
+    // Clear cookie
+    res.clearCookie('token', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict'
+    });
+
+    res.json({ message: 'Account deleted successfully' });
+  } catch (err) {
+    console.error('Delete account error:', err);
+    res.status(500).json({ message: 'Error deleting account' });
   }
 };

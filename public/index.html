@@ -20,14 +20,19 @@
     <!-- Background Layers -->
     <div class="bg-grid"></div>
     <canvas id="bgDots"></canvas>
+    <div class="tech-bg"></div>
     <div class="page-wrapper">
         <!-- TOP NAVBAR -->
         <nav class="top-nav">
 
             <!-- LEFT LOGO -->
-            <div class="nav-logo">
-                <a href="index.html">DEVELOPERS</a>
-            </div>
+<div class="nav-logo">
+    <a href="index.html">
+        <img src="assets/developers_logo.jpeg" alt="Developers Logo">
+        <span>DEVELOPERS</span>
+    </a>
+</div>
+
 
             <!-- CENTER GLASS NAV (DESKTOP ONLY) -->
             <div class="nav-center">
@@ -40,7 +45,7 @@
             <!-- RIGHT ACTION (AUTH SECTION) -->
             <div class="nav-action" id="authSection">
                 <!-- Dynamically populated: Login button OR Profile circle -->
-                <a href="login.html" class="login-btn">Log In</a>
+                <a href="login.html" class="login-btn">Log In/Register</a>
             </div>
 
             <!-- HAMBURGER (MOBILE) -->
@@ -58,26 +63,48 @@
             
             <!-- Mobile auth section -->
             <div id="mobileAuthSection">
-                <a href="login.html" class="login-btn show">Log In</a>
+                <a href="login.html" class="login-btn show" id="loginBtn">Log In/Register</a>
             </div>
         </div>
 
-        <!-- HERO -->
-        <header>
-            <h1 class="hero-title">
-                Build Your
-                <span class="typing-wrapper">
-                    <span id="typing-text"></span>
-                    <span class="cursor">|</span>
-                </span>
-            </h1>
+  <!-- HERO SECTION WITH VIDEO -->
+<header>
+    <!-- LEFT SIDE - TEXT CONTENT -->
+    <div class="hero-content">
+        <h1 class="hero-title">
+            Build Your
+            <br>
+            <span class="typing-wrapper">
+                <span id="typing-text"></span>
+                <span class="cursor">|</span>
+            </span>
+        </h1>
 
-            <p class="hero-subtitle">
-                A modern developer studio to order professional websites and apps
-            </p>
+        <p class="hero-subtitle">
+            We design, build & scale AI-powered products and modern web platforms for startups and growing businesses.
+        </p>
 
-            <a href="#pricing" class="btn">Start Your Project</a>
-        </header>
+        <button class="ai-btn">
+            <div class="flux-ring"></div>
+            <a href="#pricing" class="span">Get Started Now →</a>
+        </button>
+    </div>
+
+    <!-- RIGHT SIDE - VIDEO -->
+    <div class="video-wrapper">
+        <div class="neon-strip top-right"></div>
+        <div class="neon-strip right-side"></div>
+
+        <div class="video-card">
+            <div class="video-container">
+                <video autoplay muted loop playsinline>
+                    <source src="assets/Video_Generation_Request_And_Response.mp4" type="video/mp4">
+                </video>
+            </div>
+        </div>
+    </div>
+</header>
+        
 
         <!-- SERVICES -->
         <section>
@@ -295,7 +322,26 @@
 
                 <textarea id="orderDetails" placeholder="Project details" rows="4"
                     style="width:100%;padding:10px;margin:8px 0;border-radius:8px;border:none"></textarea>
+                <!-- File Upload Section (Optional) -->
+                    <div class="form-group">
+                        <label style="color:#aaa;font-size:14px;margin-bottom:8px;display:block;">Attach Project Files (Optional)</label>
+                        <input type="file" id="orderFiles" multiple accept="*/*" 
+                            style="width:100%;padding:12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#fff;font-size:15px;">
+                        <small style="color:#888;display:block;margin-top:8px;">
+                            You can upload images, documents, zip files, code, screenshots etc. (Max 20MB per file)
+                        </small>
 
+                        <!-- Upload Progress -->
+                        <div id="uploadProgress" style="margin-top:15px;display:none;">
+                            <div style="height:6px;background:rgba(255,255,255,0.1);border-radius:3px;overflow:hidden;">
+                                <div id="progressFill" style="height:100%;width:0%;background:#22c55e;transition:width 0.3s;"></div>
+                            </div>
+                            <small id="progressText" style="color:#aaa;margin-top:5px;display:block;">Uploading files...</small>
+                        </div>
+
+                        <!-- Uploaded Files List -->
+                        <div id="uploadedFilesList" style="margin-top:15px;"></div>
+                    </div>
                 <button class="btn" id="submitOrderBtn" style="width:100%">Submit Order</button>
                 <div id="orderMessage" style="margin-top:15px;text-align:center;"></div>
             </div>
@@ -414,9 +460,32 @@
         </footer>
     </div>
     
+<!-- Loading Screen -->
+    <div id="loadingScreen" class="loading-screen">
+        <div class="loading-content">
+            <div class="loading-logo">
+                <h1 class="loading-brand">DEVELOPERS</h1>
+                <div class="loading-tagline">Building Your Digital Future</div>
+            </div>
+            <div class="loading-bar">
+                <div class="loading-progress" id="loadingProgress"></div>
+            </div>
+            <div class="loading-text" id="loadingText">Loading...</div>
+        </div>
+    </div>
+
+    <!-- Scroll Progress Bar -->
+    <div class="scroll-progress-bar" id="scrollProgress"></div>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop" aria-label="Back to top">
+        <i class="fa-solid fa-arrow-up"></i>
+    </button>
+
     <script src="js/globaljs.js"></script>
     <script src="js/indexjs.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/ui-features.js"></script> <!-- NEW FILE -->
 </body>
 
 </html>

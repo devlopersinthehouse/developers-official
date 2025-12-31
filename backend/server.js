@@ -5,10 +5,11 @@ const cors = require('cors');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const rateLimit = require('express-rate-limit');  // ← NAYA ADD
+const orderRoutes = require('./routes/orders');
 
 const todoRoutes = require('./routes/todos');
 const authRoutes = require('./routes/auth');
-
+const adminRoutes = require('./routes/admin');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -23,7 +24,8 @@ const loginLimiter = rateLimit({
 
 app.use('/api/auth/login', loginLimiter);
 app.use('/api/auth/forgot', loginLimiter);
-
+app.use('/api/orders', orderRoutes);
+app.use('/api/admin', adminRoutes);
 // Middleware
 app.use(cors({
   origin: 'http://localhost:5000',

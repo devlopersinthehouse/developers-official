@@ -55,7 +55,6 @@ document.addEventListener("DOMContentLoaded", () => {
         observer.observe(heroTitle);
     }
 });
-
 /* =========================
    PRICING CALCULATOR
 ========================= */

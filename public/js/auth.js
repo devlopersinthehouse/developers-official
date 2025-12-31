@@ -96,6 +96,58 @@ function clearMessages() {
 }
 
 /* =========================
+   PHONE NUMBER VALIDATION (REQUIRED)
+========================= */
+function validatePhone() {
+    const phoneInput = document.getElementById('regPhone');
+    const phoneGroup = document.getElementById('phoneGroup');
+    const phoneError = document.getElementById('phoneError');
+    const phoneValid = document.getElementById('phoneValid');
+
+    if (!phoneInput || !phoneGroup) return false;
+
+    const phone = phoneInput.value.trim();
+
+    // Remove previous states
+    phoneGroup.classList.remove('valid', 'invalid');
+    if (phoneError) phoneError.style.display = 'none';
+    if (phoneValid) phoneValid.style.display = 'none';
+
+    // REQUIRED - empty not allowed
+    if (phone === '') {
+        phoneGroup.classList.add('invalid');
+        if (phoneError) {
+            phoneError.textContent = 'Mobile number is required';
+            phoneError.style.display = 'block';
+        }
+        return false;
+    }
+
+    // Strict validation: +countrycode + 10-15 digits (E.164 format)
+    const phoneRegex = /^\+[1-9]\d{9,14}$/;
+
+    if (phoneRegex.test(phone)) {
+        phoneGroup.classList.add('valid');
+        if (phoneValid) phoneValid.style.display = 'block';
+        return true;
+    } else {
+        phoneGroup.classList.add('invalid');
+        if (phoneError) {
+            phoneError.textContent = 'Invalid format. Example: +919876543210';
+            phoneError.style.display = 'block';
+        }
+        return false;
+    }
+}
+
+// Real-time validation
+const phoneInput = document.getElementById('regPhone');
+if (phoneInput) {
+    phoneInput.addEventListener('input', validatePhone);
+    phoneInput.addEventListener('blur', validatePhone);
+}
+
+/* =========================
    LOGIN HANDLER
 ========================= */
 document.getElementById('loginBtn').addEventListener('click', async () => {
@@ -134,7 +186,6 @@ document.getElementById('loginBtn').addEventListener('click', async () => {
         } else {
             let msg = data.message || 'Invalid credentials';
             
-            // Handle verification error
             if (msg.toLowerCase().includes('verify') || msg.toLowerCase().includes('verification')) {
                 msg = 'Please verify your email first. Check your inbox (and spam folder) for the verification link.';
             }
@@ -150,23 +201,30 @@ document.getElementById('loginBtn').addEventListener('click', async () => {
 });
 
 /* =========================
-   REGISTER HANDLER
+   REGISTER HANDLER – WITH REQUIRED PHONE VALIDATION
 ========================= */
 document.getElementById('registerBtn').addEventListener('click', async () => {
     const name = document.getElementById('regName').value.trim();
     const email = document.getElementById('regEmail').value.trim();
     const password = document.getElementById('regPassword').value;
+    const phone = document.getElementById('regPhone')?.value.trim() || '';
     const loader = document.getElementById('regLoader');
     const btn = document.getElementById('registerBtn');
 
     // Validation
-    if (!name || !email || !password) {
-        showMessage('registerMessage', 'Please fill in all fields', 'error');
+    if (!name || !email || !password || !phone) {
+        showMessage('registerMessage', 'All fields are required including mobile number', 'error');
         return;
     }
 
     if (password.length < 6) {
         showMessage('registerMessage', 'Password must be at least 6 characters', 'error');
+        return;
+    }
+
+    // Phone validation
+    if (!validatePhone()) {
+        showMessage('registerMessage', 'Please enter a valid mobile number (e.g. +919876543210)', 'error');
         return;
     }
 
@@ -179,7 +237,7 @@ document.getElementById('registerBtn').addEventListener('click', async () => {
             method: 'POST',
             credentials: 'include',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, email, password })
+            body: JSON.stringify({ name, email, password, phone }) // ← phone bheja
         });
 
         const data = await res.json();
@@ -192,10 +250,11 @@ document.getElementById('registerBtn').addEventListener('click', async () => {
                 'success'
             );
             
-            // Clear form fields
+            // Clear form
             document.getElementById('regName').value = '';
             document.getElementById('regEmail').value = '';
             document.getElementById('regPassword').value = '';
+            document.getElementById('regPhone').value = '';
         } else {
             showMessage('registerMessage', data.message || 'Registration failed. Try again.', 'error');
         }
@@ -215,7 +274,6 @@ document.getElementById('forgotBtn').addEventListener('click', async () => {
     const loader = document.getElementById('forgotLoader');
     const btn = document.getElementById('forgotBtn');
 
-    // Validation
     if (!email) {
         showMessage('forgotMessage', 'Please enter your email', 'error');
         return;
@@ -270,7 +328,7 @@ document.getElementById('forgotEmail').addEventListener('keypress', (e) => {
 });
 
 /* =========================
-   FLOATING TECH ICONS
+   FLOATING TECH ICONS (Existing – No Change)
 ========================= */
 function getIconCount() {
     const w = window.innerWidth;
