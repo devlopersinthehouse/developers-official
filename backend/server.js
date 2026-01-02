@@ -4,20 +4,19 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
 const cookieParser = require('cookie-parser');
-const rateLimit = require('express-rate-limit');
-
+const rateLimit = require('express-rate-limit');  // ← NAYA ADD
 const orderRoutes = require('./routes/orders');
+
 const todoRoutes = require('./routes/todos');
 const authRoutes = require('./routes/auth');
 const adminRoutes = require('./routes/admin');
-
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-/* -------------------- Security: Rate Limiting -------------------- */
+// Rate Limiting for Login & Forgot (security)
 const loginLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 5,
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // 5 attempts per IP
   message: { message: 'Too many login attempts. Try again after 15 minutes.' },
   standardHeaders: true,
   legacyHeaders: false,
@@ -25,45 +24,33 @@ const loginLimiter = rateLimit({
 
 app.use('/api/auth/login', loginLimiter);
 app.use('/api/auth/forgot', loginLimiter);
-
-/* -------------------- Middleware -------------------- */
+app.use('/api/orders', orderRoutes);
+app.use('/api/admin', adminRoutes);
+// Middleware
 app.use(cors({
-  origin: true,          // IMPORTANT: works for Railway + custom domain
+  origin: 'http://localhost:5000',
   credentials: true
 }));
 app.use(express.json());
 app.use(cookieParser());
 
-/* -------------------- Static Frontend -------------------- */
-/*
-  ASSUMPTION:
-  public/ folder is now inside backend/
-  backend/public
-*/
-app.use(express.static(path.join(__dirname, 'public')));
+// Static files
+app.use(express.static(path.join(__dirname, '../public')));
 
-/* -------------------- API Routes -------------------- */
-app.use('/api/orders', orderRoutes);
-app.use('/api/admin', adminRoutes);
+// API Routes
 app.use('/api/todos', todoRoutes);
 app.use('/api/auth', authRoutes);
 
-/* -------------------- Frontend Fallback -------------------- */
-/*
-  This ensures:
-  - index.html loads on /
-  - direct refresh on pages like /login.html works
-*/
+// Fallback
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
-/* -------------------- MongoDB -------------------- */
+// MongoDB
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('✅ MongoDB connected successfully'))
   .catch(err => console.error('❌ MongoDB connection error:', err));
 
-/* -------------------- Server -------------------- */
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
