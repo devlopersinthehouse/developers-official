@@ -1,39 +1,50 @@
 ├── backend/
 │   ├── controllers/
 │   │   ├── authController.js
-│   │   ├── paymentController.js
 │   │   ├── orderController.js
+│   │   ├── paymentController.js
 │   │   └── todoController.js
-│   ├── node_modules/ # files not shown here
 │   ├── middleware/
 │   │   └── auth.js
 │   ├── models/
-│   │   ├── Todo.js
 │   │   ├── Order.js
+│   │   ├── Todo.js
 │   │   └── User.js
 │   ├── package-lock.json
 │   ├── package.json
 │   ├── routes/
+│   │   ├── admin.js
 │   │   ├── auth.js
-│   │   ├── payment.js
 │   │   ├── orders.js
+│   │   ├── payment.js
 │   │   └── todos.js
 │   ├── server.js
 │   └── utils/
 │       └── generateToken.js
 └── public/
+    ├── admin.html
     ├── assets/
+    │   ├── developers_logo.jpeg
+    │   ├── developers_logo.jpg
+    │   ├── Screenshot 2025-12-30 180557.png
+    │   └── Video_Generation_Request_And_Response.mp4
     ├── css/
+    │   ├── dashboard.css
     │   ├── indexstyle.css
     │   ├── loginstyle.css
     │   └── style.css
+    ├── dashboard.html
     ├── index.html
     ├── js/
     │   ├── auth.js
+    │   ├── dashboard.js
     │   ├── globaljs.js
     │   ├── indexjs.js
-    │   └── main.js
+    │   ├── main.js
+    │   └── ui-features.js
     ├── login.html
     ├── package.json
+    ├── register.js
+    ├── reset-password.html
     ├── verify-email.html
-    └── reset-password.html
+    └── verify-otp.html(trial)
